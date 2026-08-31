@@ -28,7 +28,7 @@ export function RsvpForm({ recipient }: { recipient: string }) {
     }
 
     const lines = [
-      "Olá, Bina e Anastácia! 🌿",
+      "Olá, Bina e Anastácia!",
       "",
       "Gostaria de responder ao vosso convite de casamento.",
       `Nome: ${guestName}`,
@@ -52,7 +52,7 @@ export function RsvpForm({ recipient }: { recipient: string }) {
     )}`;
 
     setError("");
-    window.location.assign(whatsappUrl);
+    window.open(whatsappUrl, "_blank");
   }
 
   return (
