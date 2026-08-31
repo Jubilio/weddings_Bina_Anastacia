@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
 import { MusicPlayer } from "@/components/music-player";
+import { decodeInvitationCode } from "@/lib/invitation-code";
 
 const floatingHearts = Array.from({ length: 12 }, (_, index) => ({
   id: index,
@@ -49,20 +50,14 @@ function SectionOrnament() {
   );
 }
 
-export default async function Home() {
-  let allGuests: { id: string; name: string; companion: string | null; allowedGuests: number }[] = [];
-
-  try {
-    const { getDb } = await import("@/db");
-    const { guests: guestsSchema } = await import("@/db/schema");
-    const db = getDb();
-
-    if (db) {
-      allGuests = await db.select().from(guestsSchema);
-    }
-  } catch {
-    // Base de dados não disponível localmente — funciona sem ela
-  }
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ convite?: string | string[] }>;
+}) {
+  const params = await searchParams;
+  const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
+  const invitedNames = decodeInvitationCode(code);
 
   return (
     <main className="invitation-page">
@@ -121,6 +116,20 @@ export default async function Home() {
             Dois caminhos, uma promessa e uma vida inteira por celebrar.
           </p>
 
+          {invitedNames ? (
+            <aside className="personal-invitation" aria-label="Pessoas convidadas">
+              <span>Este convite é especialmente para</span>
+              <h2>{invitedNames.join(" • ")}</h2>
+              <p>Esperamos celebrar este momento convosco.</p>
+            </aside>
+          ) : null}
+
+          <p className="invitation-policy-note" role="note">
+            <strong>NB:</strong> este convite é válido exclusivamente para as
+            duas pessoas nominalmente indicadas. Não se estende a crianças e
+            não permite substituição, transferência ou delegação a terceiros.
+          </p>
+
           <div className="announcement" role="note">
             <span className="announcement-label">19 de Dezembro de 2026</span>
             <p>
@@ -162,12 +171,19 @@ export default async function Home() {
             <SectionOrnament />
             <p className="detail-kicker">Responda ao convite</p>
             <h2 id="rsvp-title">Confirme a sua presença</h2>
-            <p>
-              Preencha os dados abaixo. A sua resposta será enviada diretamente
-              aos noivos pelo WhatsApp.
-            </p>
+            <p>Confirme individualmente a presença de cada pessoa indicada no convite.</p>
           </div>
-          <RsvpForm recipient={invitation.rsvpWhatsapp} guests={allGuests} />
+          {invitedNames ? (
+            <RsvpForm recipient={invitation.rsvpWhatsapp} invitedNames={invitedNames} />
+          ) : (
+            <div className="rsvp-locked" role="note">
+              <CheckCircle2 aria-hidden="true" />
+              <p>
+                A confirmação está disponível apenas no link personalizado
+                enviado pelo casal, com os dois nomes já definidos.
+              </p>
+            </div>
+          )}
         </section>
 
 
