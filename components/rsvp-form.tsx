@@ -28,7 +28,7 @@ export function RsvpForm({ recipient }: { recipient: string }) {
     }
 
     const lines = [
-      "Olá, Bina e Anastácia!",
+      "Olá, Anastácia e Bina!",
       "",
       "Gostaria de responder ao vosso convite de casamento.",
       `Nome: ${guestName}`,

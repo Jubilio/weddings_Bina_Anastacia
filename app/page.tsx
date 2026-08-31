@@ -67,9 +67,9 @@ const giftItems = [
 function Monogram() {
   return (
     <div className="monogram" aria-hidden="true">
-      <span>B</span>
-      <Heart className="monogram-heart" strokeWidth={1.25} />
       <span>A</span>
+      <Heart className="monogram-heart" strokeWidth={1.25} />
+      <span>B</span>
     </div>
   );
 }
@@ -108,15 +108,15 @@ export default function Home() {
           </p>
 
           <h1 id="couple-names" className="couple-names">
-            <span>Bina</span>
-            <em>&amp;</em>
             <span>Anastácia</span>
+            <em>&amp;</em>
+            <span>Bina</span>
           </h1>
 
           <div className="full-names" aria-label="Nomes completos dos noivos">
-            <p>{invitation.groom}</p>
-            <span aria-hidden="true" />
             <p>{invitation.bride}</p>
+            <span aria-hidden="true" />
+            <p>{invitation.groom}</p>
           </div>
 
           <p className="message">
