@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 
 const loveMessages = [
@@ -15,19 +14,12 @@ const loveMessages = [
 ];
 
 export function RandomLoveMessage() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * loveMessages.length);
-    setMessage(loveMessages[randomIndex]);
-  }, []);
-
-  if (!message) return null;
+  const message = loveMessages[new Date().getUTCDate() % loveMessages.length];
 
   return (
     <div className="message" style={{ margin: '2rem 0', fontStyle: 'italic', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
       <Heart className="monogram-heart" strokeWidth={1.25} style={{ width: 20, height: 20, color: 'var(--color-primary)' }} />
-      <p>"{message}"</p>
+      <p>“{message}”</p>
     </div>
   );
 }
