@@ -287,6 +287,153 @@ a {
   line-height: 1.65;
 }
 
+.personal-invitation {
+  width: min(100%, 520px);
+  margin-top: 25px;
+  padding: 21px 18px;
+  border: 1px solid rgba(182, 150, 88, 0.4);
+  background: rgba(255, 253, 248, 0.9);
+  box-shadow: 0 16px 36px rgba(67, 80, 63, 0.08);
+}
+
+.personal-invitation > span {
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.personal-invitation h2 {
+  margin: 12px 0 8px;
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(18px, 5vw, 26px);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.personal-invitation p {
+  margin: 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+}
+
+.invitation-policy-note {
+  display: flex;
+  width: min(100%, 520px);
+  gap: 10px;
+  margin: 18px auto 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--gold);
+  background: rgba(182, 150, 88, 0.1);
+  color: var(--sage-deep);
+  font-size: 12px;
+  line-height: 1.65;
+  text-align: left;
+}
+
+.invitation-policy-note p {
+  margin: 0;
+}
+
+.invitation-policy-note svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--gold);
+}
+
+.invitation-policy-note.compact {
+  width: 100%;
+  margin: 0 0 22px;
+}
+
+.rsvp-locked {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 22px;
+  border: 1px solid rgba(102, 116, 92, 0.22);
+  background: #fffdf9;
+  color: var(--sage-deep);
+}
+
+.rsvp-locked svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  color: var(--gold);
+}
+
+.rsvp-locked p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.personal-rsvp-fieldset {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.personal-rsvp-fieldset > legend {
+  margin-bottom: 13px;
+  color: var(--sage-deep);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.personal-rsvp-list {
+  display: grid;
+  gap: 11px;
+}
+
+.personal-rsvp-row {
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+  border: 1px solid rgba(102, 116, 92, 0.22);
+  background: #fffdf9;
+}
+
+.personal-rsvp-row > strong {
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.person-attendance-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.person-attendance-choice {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(102, 116, 92, 0.25);
+  background: #f6f4ed;
+  cursor: pointer;
+}
+
+.person-attendance-choice:has([data-state="checked"]) {
+  border-color: var(--sage);
+  background: var(--sage-pale);
+  color: var(--sage-deep);
+}
+
 .announcement {
   width: min(100%, 500px);
   margin-top: 27px;
