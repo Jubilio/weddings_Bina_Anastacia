@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
+import { MusicPlayer } from "@/components/music-player";
 
 const invitation = {
   family: "FAMÍLIA HILÁRIO",
@@ -86,6 +87,7 @@ function SectionOrnament() {
 export default function Home() {
   return (
     <main className="invitation-page">
+      <MusicPlayer />
       <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
       <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
 
@@ -122,8 +124,12 @@ export default function Home() {
           </p>
 
           <div className="announcement" role="note">
-            <span className="announcement-label">Em breve</span>
-            <p>Partilharemos a data, a hora e todos os detalhes da celebração.</p>
+            <span className="announcement-label">19 de Dezembro de 2026</span>
+            <p>
+              Cidade de Nampula. A cerimónia terá lugar no Conservatório pelas
+              10h. O almoço será servido no Salão de eventos da Academia Militar
+              pelas 14h.
+            </p>
           </div>
 
           <div className="hero-actions" aria-label="Informações do casamento">
@@ -214,11 +220,16 @@ export default function Home() {
           </div>
           <p className="detail-kicker">Onde celebrar</p>
           <h2 id="location-title">Localização</h2>
-          <p>
-            Estamos a preparar todos os detalhes. O endereço e o acesso pelo
-            Google Maps serão adicionados aqui.
-          </p>
-          <span className="pending-label">Local a anunciar</span>
+          <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <strong>Cerimónia (10h00):</strong><br/>
+              Conservatório, Cidade de Nampula
+            </div>
+            <div>
+              <strong>Almoço (14h00):</strong><br/>
+              Salão de eventos da Academia Militar, Cidade de Nampula
+            </div>
+          </div>
         </section>
 
         <footer className="invitation-footer">
