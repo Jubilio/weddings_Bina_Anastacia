@@ -11,6 +11,15 @@ import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
 import { MusicPlayer } from "@/components/music-player";
 
+const floatingHearts = Array.from({ length: 12 }, (_, index) => ({
+  id: index,
+  left: `${(index * 17 + 8) % 100}%`,
+  size: `${9 + (index % 4) * 4}px`,
+  delay: `${(index % 6) * 2.2}s`,
+  duration: `${14 + (index % 5) * 4}s`,
+  opacity: 0.12 + (index % 4) * 0.09,
+}));
+
 const invitation = {
   family: "FAMÍLIA HILÁRIO",
   groom: "BINA MIGUEL HILÁRIO",
@@ -42,12 +51,41 @@ function SectionOrnament() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  let allGuests: { id: string; name: string; companion: string | null; allowedGuests: number }[] = [];
+  try {
+    const { getDb } = await import("@/db");
+    const { guests: guestsSchema } = await import("@/db/schema");
+    const db = getDb();
+    allGuests = await db.select().from(guestsSchema);
+  } catch {
+    // Base de dados não disponível localmente — funciona sem ela
+  }
+
   return (
     <main className="invitation-page">
       <MusicPlayer />
       <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
       <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+      <div className="floating-hearts" aria-hidden="true">
+        {floatingHearts.map((heart) => (
+          <span
+            key={heart.id}
+            className="floating-heart"
+            style={{
+              left: heart.left,
+              width: heart.size,
+              height: heart.size,
+              opacity: heart.opacity,
+              ['--heart-opacity' as string]: heart.opacity,
+              animationDelay: heart.delay,
+              animationDuration: heart.duration,
+            }}
+          >
+            ❤
+          </span>
+        ))}
+      </div>
 
       <article className="invitation-shell">
         <section className="hero" aria-labelledby="couple-names">
@@ -127,7 +165,7 @@ export default function Home() {
               aos noivos pelo WhatsApp.
             </p>
           </div>
-          <RsvpForm recipient={invitation.rsvpWhatsapp} />
+          <RsvpForm recipient={invitation.rsvpWhatsapp} guests={allGuests} />
         </section>
 
 

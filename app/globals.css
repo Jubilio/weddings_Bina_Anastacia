@@ -67,6 +67,30 @@ a {
   background: #a8b29d;
 }
 
+.floating-hearts {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.floating-heart {
+  position: absolute;
+  bottom: -10%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(182, 150, 88, 0.75);
+  font-size: inherit;
+  filter: blur(0.3px);
+  text-shadow: 0 0 12px rgba(182, 150, 88, 0.25);
+  animation-name: floatHeart;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
 .invitation-shell {
   position: relative;
   width: min(100%, 780px);
@@ -836,6 +860,26 @@ a {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.7) rotate(-5deg);
+  }
+  10% {
+    opacity: var(--heart-opacity, 0.45);
+  }
+  50% {
+    transform: translate3d(14px, -50vh, 0) scale(1.05) rotate(8deg);
+  }
+  90% {
+    opacity: var(--heart-opacity, 0.45);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-8px, -105vh, 0) scale(0.75) rotate(-10deg);
   }
 }
 

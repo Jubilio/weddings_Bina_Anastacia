@@ -6,16 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { GUEST_LIST, type Guest } from "@/lib/guests";
 
 type Attendance = "sim" | "nao" | "";
 
-export function RsvpForm({ recipient }: { recipient: string }) {
+export function RsvpForm({ recipient, guests }: { recipient: string; guests: any[] }) {
   const [selectedGuestId, setSelectedGuestId] = useState<string>("");
   const [attendance, setAttendance] = useState<Attendance>("");
   const [error, setError] = useState("");
 
-  const selectedGuest = GUEST_LIST.find((g) => g.id === selectedGuestId);
+  const selectedGuest = guests.find((g) => g.id === selectedGuestId);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -85,7 +84,7 @@ export function RsvpForm({ recipient }: { recipient: string }) {
           required
         >
           <option value="" disabled>-- Procurar o meu nome --</option>
-          {GUEST_LIST.map((guest) => (
+          {guests.map((guest) => (
             <option key={guest.id} value={guest.id}>
               {guest.name} {guest.companion ? `(& ${guest.companion})` : ""}
             </option>

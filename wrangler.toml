@@ -1,0 +1,7 @@
+name = "casamento-bina-anastacia"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "casamento_bina_anastacia_db"
+database_name = "casamento-bina-anastacia-db"
+database_id = "ace00c5d-3b3a-4786-89d5-04b6cacb4c2a"
