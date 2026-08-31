@@ -235,7 +235,7 @@ export default function Home() {
         <footer className="invitation-footer">
           <SectionOrnament />
           <p>Esperamos por si</p>
-          <span>Bina &amp; Anastácia</span>
+          <span>Anastácia &amp; Bina</span>
         </footer>
       </article>
     </main>
