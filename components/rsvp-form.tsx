@@ -1,46 +1,54 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Send } from "lucide-react";
+import { Send, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { GUEST_LIST, type Guest } from "@/lib/guests";
 
 type Attendance = "sim" | "nao" | "";
 
 export function RsvpForm({ recipient }: { recipient: string }) {
+  const [selectedGuestId, setSelectedGuestId] = useState<string>("");
   const [attendance, setAttendance] = useState<Attendance>("");
   const [error, setError] = useState("");
+
+  const selectedGuest = GUEST_LIST.find((g) => g.id === selectedGuestId);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-    const guestName = String(formData.get("guestName") ?? "").trim();
-    const guests = String(formData.get("guests") ?? "1").trim();
-    const note = String(formData.get("note") ?? "").trim();
-
-    if (!guestName || !attendance) {
-      setError("Indique o seu nome e escolha uma resposta.");
+    if (!selectedGuest || !attendance) {
+      setError("Por favor, selecione o seu nome e escolha uma resposta.");
       return;
     }
+
+    const note = String(new FormData(event.currentTarget).get("note") ?? "").trim();
+    const isAttending = attendance === "sim";
 
     const lines = [
       "Olá, Anastácia e Bina!",
       "",
       "Gostaria de responder ao vosso convite de casamento.",
-      `Nome: ${guestName}`,
-      `Confirmação: ${
-        attendance === "sim"
-          ? "Confirmo a minha presença"
-          : "Infelizmente não poderei comparecer"
-      }`,
+      `Nome: ${selectedGuest.name}`,
     ];
 
-    if (attendance === "sim") {
-      lines.push(`Número de pessoas: ${guests || "1"}`);
+    if (selectedGuest.companion) {
+      lines.push(`Acompanhante: ${selectedGuest.companion}`);
+    }
+
+    lines.push(
+      `Confirmação: ${
+        isAttending
+          ? "Confirmamos a nossa presença"
+          : "Infelizmente não poderei comparecer"
+      }`
+    );
+
+    if (isAttending) {
+      lines.push(`Número de pessoas (aprovadas): ${selectedGuest.allowedGuests}`);
     }
 
     if (note) {
@@ -57,80 +65,90 @@ export function RsvpForm({ recipient }: { recipient: string }) {
 
   return (
     <form className="rsvp-form" onSubmit={handleSubmit}>
-      <div className="form-field">
-        <Label htmlFor="guestName">Nome completo</Label>
-        <Input
-          id="guestName"
-          name="guestName"
-          autoComplete="name"
-          placeholder="Como devemos identificar-lhe?"
-          required
-        />
+      <div className="bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-md mb-6 flex gap-3 text-sm">
+        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+        <div>
+          <strong>N.B:</strong> O convite é válido estritamente para o número de pessoas indicado. <strong>Não é extensivo a crianças</strong> e não é permitida a delegação do convite a terceiros.
+        </div>
       </div>
 
-      <fieldset className="form-field">
-        <legend>Vai estar presente?</legend>
-        <RadioGroup
-          name="attendance"
-          className="attendance-options"
-          value={attendance}
-          onValueChange={(value) => setAttendance(value as Attendance)}
+      <div className="form-field">
+        <Label htmlFor="guestSelect">Selecione o seu nome na lista</Label>
+        <select
+          id="guestSelect"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          value={selectedGuestId}
+          onChange={(e) => {
+            setSelectedGuestId(e.target.value);
+            setError("");
+          }}
           required
         >
-          <Label className="attendance-option" htmlFor="attendance-yes">
-            <RadioGroupItem id="attendance-yes" value="sim" />
-            <span>
-              <strong>Sim, estarei presente</strong>
-              <small>Será uma alegria celebrar convosco.</small>
-            </span>
-          </Label>
-          <Label className="attendance-option" htmlFor="attendance-no">
-            <RadioGroupItem id="attendance-no" value="nao" />
-            <span>
-              <strong>Não poderei comparecer</strong>
-              <small>Envie-nos a sua resposta com carinho.</small>
-            </span>
-          </Label>
-        </RadioGroup>
-      </fieldset>
+          <option value="" disabled>-- Procurar o meu nome --</option>
+          {GUEST_LIST.map((guest) => (
+            <option key={guest.id} value={guest.id}>
+              {guest.name} {guest.companion ? `(& ${guest.companion})` : ""}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      {attendance === "sim" ? (
+      {selectedGuest && (
+        <fieldset className="form-field mt-4">
+          <legend>Vai estar presente?</legend>
+          <RadioGroup
+            name="attendance"
+            className="attendance-options"
+            value={attendance}
+            onValueChange={(value) => setAttendance(value as Attendance)}
+            required
+          >
+            <Label className="attendance-option" htmlFor="attendance-yes">
+              <RadioGroupItem id="attendance-yes" value="sim" />
+              <span>
+                <strong>Sim, estarei presente</strong>
+                <small>Será uma alegria celebrar convosco.</small>
+              </span>
+            </Label>
+            <Label className="attendance-option" htmlFor="attendance-no">
+              <RadioGroupItem id="attendance-no" value="nao" />
+              <span>
+                <strong>Não poderei comparecer</strong>
+                <small>Envie-nos a sua resposta com carinho.</small>
+              </span>
+            </Label>
+          </RadioGroup>
+        </fieldset>
+      )}
+
+      {selectedGuest && attendance && (
         <div className="form-field">
-          <Label htmlFor="guests">Número de pessoas</Label>
-          <Input
-            id="guests"
-            name="guests"
-            type="number"
-            inputMode="numeric"
-            min="1"
-            max="10"
-            defaultValue="1"
+          <Label htmlFor="note">Mensagem aos noivos (opcional)</Label>
+          <Textarea
+            id="note"
+            name="note"
+            rows={3}
+            placeholder="Escreva uma breve mensagem"
           />
         </div>
-      ) : null}
-
-      <div className="form-field">
-        <Label htmlFor="note">Mensagem aos noivos (opcional)</Label>
-        <Textarea
-          id="note"
-          name="note"
-          rows={3}
-          placeholder="Escreva uma breve mensagem"
-        />
-      </div>
+      )}
 
       <p className="form-error" role="alert" aria-live="polite">
         {error}
       </p>
 
-      <Button type="submit" size="lg" className="rsvp-submit">
-        <Send aria-hidden="true" />
-        Enviar confirmação por WhatsApp
-      </Button>
+      {selectedGuest && attendance && (
+        <Button type="submit" size="lg" className="rsvp-submit">
+          <Send aria-hidden="true" />
+          Enviar confirmação por WhatsApp
+        </Button>
+      )}
 
-      <p className="form-note">
-        Ao enviar, o WhatsApp abrirá com a sua confirmação pronta.
-      </p>
+      {selectedGuest && attendance && (
+        <p className="form-note">
+          Ao enviar, o WhatsApp abrirá com a sua confirmação pronta.
+        </p>
+      )}
     </form>
   );
 }
