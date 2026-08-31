@@ -4,8 +4,6 @@ import {
   Gift,
   Heart,
   MapPin,
-  Smartphone,
-  WalletCards,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
@@ -53,11 +51,15 @@ function SectionOrnament() {
 
 export default async function Home() {
   let allGuests: { id: string; name: string; companion: string | null; allowedGuests: number }[] = [];
+
   try {
     const { getDb } = await import("@/db");
     const { guests: guestsSchema } = await import("@/db/schema");
     const db = getDb();
-    allGuests = await db.select().from(guestsSchema);
+
+    if (db) {
+      allGuests = await db.select().from(guestsSchema);
+    }
   } catch {
     // Base de dados não disponível localmente — funciona sem ela
   }

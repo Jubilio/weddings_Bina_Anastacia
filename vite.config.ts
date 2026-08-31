@@ -3,6 +3,31 @@ import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
+if (typeof globalThis.WeakRef === "undefined") {
+  class WeakRefShim {
+    private value: unknown;
+
+    constructor(value: unknown) {
+      this.value = value;
+    }
+
+    deref() {
+      return this.value;
+    }
+  }
+
+  globalThis.WeakRef = WeakRefShim as typeof WeakRef;
+}
+
+if (typeof globalThis.FinalizationRegistry === "undefined") {
+  class FinalizationRegistryShim {
+    register() {}
+    unregister() {}
+  }
+
+  globalThis.FinalizationRegistry = FinalizationRegistryShim as typeof FinalizationRegistry;
+}
+
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   "00000000-0000-4000-8000-000000000000";
 
@@ -32,12 +57,27 @@ export default defineConfig(async () => {
         ? { watch: { useFsEvents: false, usePolling: true } }
         : {}),
     },
+    optimizeDeps: {
+      exclude: ["@cloudflare/unenv-preset/node/process"]
+    },
     plugins: [
       vinext(),
       sites(),
       cloudflare({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
         inspectorPort: false,
+        config: {
+          compatibility_date: "2024-09-23",
+          d1_databases: d1
+            ? [
+                {
+                  binding: d1,
+                  database_name: "casamento-bina-anastacia-db",
+                  database_id: "ace00c5d-3b3a-4786-89d5-04b6cacb4c2a",
+                },
+              ]
+            : [],
+        },
       }),
     ],
   };

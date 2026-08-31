@@ -5,33 +5,43 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default async function AdminPage() {
-  let allGuests: { id: string; name: string; companion: string | null; allowedGuests: number }[] = [];
-  try {
-    const db = getDb();
-    allGuests = await db.select().from(guests);
-  } catch {
-    // DB não disponível localmente
+async function addGuest(formData: FormData) {
+  "use server";
+  const db = getDb();
+
+  if (!db) {
+    return;
   }
 
-  async function addGuest(formData: FormData) {
-    "use server";
+  const rawName = formData.get("name");
+  const rawCompanion = formData.get("companion");
+  const name = typeof rawName === "string" ? rawName.trim() : "";
+  const companion = typeof rawCompanion === "string" ? rawCompanion.trim() : "";
+  const allowedGuests = Number(formData.get("allowedGuests") || 1);
+
+  if (!name) return;
+
+  await db.insert(guests).values({
+    id: crypto.randomUUID(),
+    name,
+    companion: companion || null,
+    allowedGuests,
+  });
+
+  revalidatePath("/admin");
+}
+
+export default async function AdminPage() {
+  let allGuests: { id: string; name: string; companion: string | null; allowedGuests: number }[] = [];
+
+  try {
     const db = getDb();
-    
-    const name = String(formData.get("name") || "").trim();
-    const companion = String(formData.get("companion") || "").trim() || null;
-    const allowedGuests = Number(formData.get("allowedGuests") || 1);
 
-    if (!name) return;
-
-    await db.insert(guests).values({
-      id: crypto.randomUUID(),
-      name,
-      companion,
-      allowedGuests,
-    });
-
-    revalidatePath("/admin");
+    if (db) {
+      allGuests = await db.select().from(guests);
+    }
+  } catch {
+    // DB não disponível localmente
   }
 
   return (
