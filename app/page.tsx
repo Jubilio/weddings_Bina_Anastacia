@@ -174,7 +174,7 @@ export default async function Home({
         <section className="couple-story" aria-labelledby="couple-story-title">
           <div className="couple-story-heading">
             <p className="detail-kicker">Um pouco de nós</p>
-            <h2 id="couple-story-title">A nossa história em imagens</h2>
+            <h2 id="couple-story-title">A nossa História!</h2>
             <p>
               Entre sorrisos, cumplicidade e sonhos partilhados, seguimos juntos
               para o nosso grande dia.
