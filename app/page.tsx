@@ -281,7 +281,7 @@ export default async function Home({
               invitation={personalizedInvitation}
             />
           ) : (
-            <div className="rsvp-locked" role="note">
+            <div className="rsvp-locked" role="note" style={{ marginTop: '1.5rem' }}>
               <CheckCircle2 aria-hidden="true" />
               <p>
                 Para assegurar a correta identificação dos convidados, a
