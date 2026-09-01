@@ -76,7 +76,7 @@ export default function Presentes() {
           <div className="section-heading">
             <SectionOrnament />
             <p className="detail-kicker">Com carinho</p>
-            <h1>Lista de presentes</h1>
+            <h2>Lista de presentes</h2>
             <p>
               A vossa presença será sempre o nosso maior presente. Para quem
               desejar abençoar esta nova etapa, deixamos algumas sugestões.
