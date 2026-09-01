@@ -8,7 +8,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
 import { MusicPlayer } from "@/components/music-player";
-import { decodeInvitationCode } from "@/lib/invitation-code";
+import { getInvitationByCode } from "@/lib/invitations";
+
+export const dynamic = "force-dynamic";
 
 const floatingHearts = Array.from({ length: 12 }, (_, index) => ({
   id: index,
@@ -57,7 +59,9 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
-  const invitedNames = decodeInvitationCode(code);
+  const foundInvitation = code ? await getInvitationByCode(code) : null;
+  const personalizedInvitation =
+    foundInvitation?.invitees.length === 2 ? foundInvitation : null;
 
   return (
     <main className="invitation-page">
@@ -116,10 +120,14 @@ export default async function Home({
             Dois caminhos, uma promessa e uma vida inteira por celebrar.
           </p>
 
-          {invitedNames ? (
+          {personalizedInvitation ? (
             <aside className="personal-invitation" aria-label="Pessoas convidadas">
               <span>Este convite é especialmente para</span>
-              <h2>{invitedNames.join(" • ")}</h2>
+              <h2>
+                {personalizedInvitation.invitees
+                  .map((person) => person.fullName)
+                  .join(" • ")}
+              </h2>
               <p>Esperamos celebrar este momento convosco.</p>
             </aside>
           ) : null}
@@ -173,8 +181,11 @@ export default async function Home({
             <h2 id="rsvp-title">Confirme a sua presença</h2>
             <p>Confirme individualmente a presença de cada pessoa indicada no convite.</p>
           </div>
-          {invitedNames ? (
-            <RsvpForm recipient={invitation.rsvpWhatsapp} invitedNames={invitedNames} />
+          {personalizedInvitation ? (
+            <RsvpForm
+              recipient={invitation.rsvpWhatsapp}
+              invitation={personalizedInvitation}
+            />
           ) : (
             <div className="rsvp-locked" role="note">
               <CheckCircle2 aria-hidden="true" />

@@ -403,11 +403,25 @@ a {
   background: #fffdf9;
 }
 
-.personal-rsvp-row > strong {
+.personal-rsvp-row > p {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+}
+
+.personal-rsvp-row strong {
   color: var(--sage-deep);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   font-weight: 600;
+}
+
+.personal-rsvp-row small {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .person-attendance-options {
@@ -996,6 +1010,332 @@ a {
 
   .hero-actions {
     animation-delay: 0.3s;
+  }
+}
+
+.admin-login-page,
+.admin-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(182, 150, 88, 0.16), transparent 34%),
+    linear-gradient(135deg, #eee8dc, #fbf8f1 48%, #e6eadf);
+  color: var(--ink);
+}
+
+.admin-login-page {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.admin-login-card {
+  display: grid;
+  width: min(100%, 430px);
+  gap: 20px;
+  padding: 36px;
+  border: 1px solid rgba(182, 150, 88, 0.38);
+  background: var(--paper);
+  box-shadow: 0 28px 80px rgba(58, 52, 41, 0.16);
+}
+
+.admin-login-card h1,
+.admin-header h1 {
+  margin: 0;
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+}
+
+.admin-login-card > p,
+.admin-header > div > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.admin-login-card > a {
+  color: var(--sage-deep);
+  font-size: 13px;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.admin-mark {
+  display: grid;
+  width: 68px;
+  height: 68px;
+  place-items: center;
+  border: 1px solid var(--gold-soft);
+  border-radius: 50%;
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+}
+
+.admin-mark span {
+  color: var(--gold);
+  font-size: 12px;
+}
+
+.admin-loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  margin: 0;
+  background: var(--ivory);
+  color: var(--muted);
+}
+
+.admin-page {
+  padding: 24px;
+}
+
+.admin-header {
+  display: flex;
+  width: min(1180px, 100%);
+  margin: 0 auto 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  border: 1px solid rgba(182, 150, 88, 0.3);
+  background: rgba(255, 253, 248, 0.94);
+}
+
+.admin-header h1 {
+  margin: 8px 0 7px;
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.admin-stats {
+  display: grid;
+  width: min(1180px, 100%);
+  margin: 0 auto 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.admin-stats article {
+  display: flex;
+  min-height: 105px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  border: 1px solid rgba(102, 116, 92, 0.2);
+  background: rgba(255, 253, 248, 0.9);
+}
+
+.admin-stats strong {
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.admin-stats span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-grid {
+  display: grid;
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  gap: 24px;
+}
+
+.guest-editor,
+.guest-list {
+  padding: 24px;
+  border: 1px solid rgba(182, 150, 88, 0.3);
+  background: rgba(255, 253, 248, 0.96);
+}
+
+.guest-editor {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+}
+
+.admin-section-title {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-section-title > svg {
+  width: 22px;
+  color: var(--gold);
+  stroke-width: 1.5;
+}
+
+.admin-section-title p {
+  margin: 0;
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.admin-section-title span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-policy-note {
+  margin: 0;
+  padding: 13px 14px;
+  border-left: 3px solid var(--gold);
+  background: rgba(182, 150, 88, 0.1);
+  color: var(--sage-deep);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.editor-actions,
+.guest-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-message {
+  margin: 0;
+  color: var(--sage-deep);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.admin-message.error {
+  color: #9b3f3f;
+}
+
+.guest-list {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.guest-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(102, 116, 92, 0.2);
+  background: #f8f6ef;
+}
+
+.guest-card-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.guest-card h2 {
+  margin: 0;
+  color: var(--sage-deep);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.guest-card-heading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.invitee-status-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.invitee-status-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(102, 116, 92, 0.12);
+  font-size: 13px;
+}
+
+.invitee-status-list small {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #e8e5db;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.invitee-status-list .status-sim {
+  background: #dce8d8;
+  color: #385235;
+}
+
+.invitee-status-list .status-nao {
+  background: #f0deda;
+  color: #7b3d35;
+}
+
+.copy-link {
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .personal-rsvp-row {
+    grid-template-columns: 1fr 210px;
+    align-items: center;
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .admin-page {
+    padding: 38px;
+  }
+
+  .admin-grid {
+    grid-template-columns: minmax(330px, 0.8fr) minmax(480px, 1.2fr);
+    align-items: start;
+  }
+
+  .guest-editor {
+    position: sticky;
+    top: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-header {
+    flex-direction: column;
+  }
+
+  .admin-header > button {
+    width: 100%;
+  }
+
+  .admin-login-card,
+  .guest-editor,
+  .guest-list {
+    padding: 20px;
   }
 }
 
