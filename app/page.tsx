@@ -174,14 +174,30 @@ export default async function Home({
         <section className="couple-story" aria-labelledby="couple-story-title">
           <div className="couple-story-heading">
             <p className="detail-kicker">Um pouco de nós</p>
-            <h2 id="couple-story-title">A nossa História!</h2>
-            <p>
-              Entre sorrisos, cumplicidade e sonhos partilhados, seguimos juntos
-              para o nosso grande dia.
-            </p>
+            <p className="story-symbols" aria-hidden="true">💍 ❤️ 💍</p>
+            <h2 id="couple-story-title">A nossa história de amor</h2>
           </div>
 
-          <div className="couple-gallery">
+          <div className="story-chapter story-chapter-first">
+            <div className="story-copy">
+              <p className="story-lead">
+                Há um ano, dois olhares encontraram-se por acaso. <span aria-hidden="true">👀✨</span>
+              </p>
+              <p>
+                Foi apenas um instante, mas aquele olhar despertou algo especial
+                nos dois. Sem saberem, naquele momento começava uma história que
+                mudaria as suas vidas. <span aria-hidden="true">❤️</span>
+              </p>
+              <p>
+                Depois daquele encontro, vieram as conversas <span aria-hidden="true">💬</span>,
+                os passeios <span aria-hidden="true">🌹</span>, os momentos partilhados
+                <span aria-hidden="true"> 🥰</span> e, pouco a pouco, descobriram que havia
+                algo diferente entre eles. O que começou com um simples olhar
+                transformou-se em carinho, cumplicidade e, finalmente, em amor.
+                <span aria-hidden="true"> ❤️</span>
+              </p>
+            </div>
+
             <figure className="couple-photo couple-photo-feature">
               <img
                 src="/images/noivos-momento.png"
@@ -193,6 +209,9 @@ export default async function Home({
               />
               <figcaption>O amor vive nos pequenos momentos.</figcaption>
             </figure>
+          </div>
+
+          <div className="story-chapter story-chapter-second">
             <figure className="couple-photo couple-photo-portrait">
               <img
                 src="/images/noivos-retrato.png"
@@ -204,6 +223,37 @@ export default async function Home({
               />
               <figcaption>Dois caminhos, um só futuro.</figcaption>
             </figure>
+
+            <div className="story-copy">
+              <p>
+                Ao longo deste tempo, aprenderam a caminhar juntos
+                <span aria-hidden="true"> 🤝</span>, a apoiar-se nos momentos difíceis e
+                a celebrar cada conquista. <span aria-hidden="true">✨</span> Foi então que
+                perceberam que não queriam apenas viver momentos juntos, mas
+                construir uma vida lado a lado. <span aria-hidden="true">🏡❤️</span>
+              </p>
+              <p>
+                E hoje, com o coração cheio de amor <span aria-hidden="true">💕</span> e a
+                certeza de que encontraram um no outro um companheiro para a
+                vida, decidiram dar o passo mais bonito da sua história:
+                <strong> casar!</strong> <span aria-hidden="true">💍👰🤵❤️</span>
+              </p>
+
+              <div className="story-promises" aria-label="O nosso futuro">
+                <p><span aria-hidden="true">📅</span> A data está marcada.</p>
+                <p><span aria-hidden="true">🥂</span> O amor está confirmado.</p>
+                <p><span aria-hidden="true">💞</span> E o futuro será vivido a dois.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="story-finale">
+            <p>
+              Aquele olhar que, há um ano, deu início a tudo
+              <span aria-hidden="true"> 👀❤️</span> será para sempre lembrado como o
+              primeiro capítulo de uma história que agora ganha um novo começo…
+            </p>
+            <strong>✨ Uma vida a dois, um amor para sempre! ✨</strong>
           </div>
         </section>
 
