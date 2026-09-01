@@ -138,9 +138,7 @@ export default async function Home({
           <div className="announcement" role="note">
             <span className="announcement-label">19 de Dezembro de 2026</span>
             <p>
-              Cidade de Nampula. A cerimónia terá lugar no Conservatório pelas
-              10h. O almoço será servido no Salão de eventos da Academia Militar
-              pelas 14h.
+              A cerimónia terá lugar na <strong>Cidade de Nampula, na Conservatória, pelas 10h00</strong>, e o almoço será servido no <strong>Salão de Eventos da Academia Militar, pelas 14h00</strong>.
             </p>
           </div>
 
