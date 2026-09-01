@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
 import { RandomLoveMessage } from "@/components/random-love-message";
 import { MusicPlayer } from "@/components/music-player";
+import { SplashScreen, WeddingCountdown } from "@/components/wedding-experience";
 import { getInvitationByCode } from "@/lib/invitations";
 
 export const dynamic = "force-dynamic";
@@ -66,6 +67,7 @@ export default async function Home({
 
   return (
     <main className="invitation-page">
+      <SplashScreen />
       <MusicPlayer />
       <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
       <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
@@ -143,6 +145,8 @@ export default async function Home({
               A cerimónia terá lugar na <strong>Cidade de Nampula, na Conservatória, pelas 10h00</strong>, e o almoço será servido no <strong>Salão de Eventos da Academia Militar, pelas 14h00</strong>.
             </p>
           </div>
+
+          <WeddingCountdown />
 
           <div className="hero-actions" aria-label="Informações do casamento">
             <Button asChild size="lg" className="primary-action rsvp-action">
