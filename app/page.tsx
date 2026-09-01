@@ -171,6 +171,42 @@ export default async function Home({
           <p className="tap-hint">Toque nos botões para ver os detalhes</p>
         </section>
 
+        <section className="couple-story" aria-labelledby="couple-story-title">
+          <div className="couple-story-heading">
+            <p className="detail-kicker">Um pouco de nós</p>
+            <h2 id="couple-story-title">A nossa história em imagens</h2>
+            <p>
+              Entre sorrisos, cumplicidade e sonhos partilhados, seguimos juntos
+              para o nosso grande dia.
+            </p>
+          </div>
+
+          <div className="couple-gallery">
+            <figure className="couple-photo couple-photo-feature">
+              <img
+                src="/images/noivos-momento.png"
+                alt="Anastácia e Bina num momento carinhoso"
+                width={1512}
+                height={1336}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>O amor vive nos pequenos momentos.</figcaption>
+            </figure>
+            <figure className="couple-photo couple-photo-portrait">
+              <img
+                src="/images/noivos-retrato.png"
+                alt="Anastácia e Bina juntos, vestidos de branco"
+                width={960}
+                height={1280}
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>Dois caminhos, um só futuro.</figcaption>
+            </figure>
+          </div>
+        </section>
+
         <section id="confirmacao" className="rsvp-section" aria-labelledby="rsvp-title">
           <div className="section-heading">
             <SectionOrnament />
@@ -192,8 +228,10 @@ export default async function Home({
             <div className="rsvp-locked" role="note">
               <CheckCircle2 aria-hidden="true" />
               <p>
-                A confirmação está disponível apenas no link personalizado
-                enviado pelo casal, com os dois nomes já definidos.
+                Para assegurar a correta identificação dos convidados, a
+                confirmação de presença deverá ser realizada exclusivamente
+                através do link personalizado enviado pelo casal, no qual
+                constam os dois nomes associados ao convite.
               </p>
             </div>
           )}
