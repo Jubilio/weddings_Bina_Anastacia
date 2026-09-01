@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
 import { RandomLoveMessage } from "@/components/random-love-message";
 import { MusicPlayer } from "@/components/music-player";
+import { InvitationPass } from "@/components/invitation-pass";
 import { SplashScreen, WeddingCountdown } from "@/components/wedding-experience";
 import { getInvitationByCode } from "@/lib/invitations";
 
@@ -264,9 +265,19 @@ export default async function Home({
         <section id="confirmacao" className="rsvp-section" aria-labelledby="rsvp-title">
           <div className="section-heading">
             <SectionOrnament />
-            <p className="detail-kicker">Responda ao convite</p>
-            <h2 id="rsvp-title">Confirme a sua presença</h2>
-            <p>Confirme individualmente a presença de cada pessoa indicada no convite.</p>
+            <p className="detail-kicker">
+              {personalizedInvitation?.respondedAt ? "Convite confirmado" : "Responda ao convite"}
+            </p>
+            <h2 id="rsvp-title">
+              {personalizedInvitation?.respondedAt
+                ? "O seu Passe Digital"
+                : "Confirme a sua presença"}
+            </h2>
+            <p>
+              {personalizedInvitation?.respondedAt
+                ? "Este link identifica oficialmente o seu convite e permanece disponível sempre que precisar de o apresentar."
+                : "Confirme individualmente a presença de cada pessoa indicada no convite."}
+            </p>
           </div>
           <div className="invitation-policy-note" role="note" aria-label="Termos e condições do convite">
             <div style={{ marginBottom: '0.5rem' }}>
@@ -280,10 +291,23 @@ export default async function Home({
             </ul>
           </div>
           {personalizedInvitation ? (
-            <RsvpForm
-              recipient={invitation.rsvpWhatsapp}
-              invitation={personalizedInvitation}
-            />
+            personalizedInvitation.respondedAt ? (
+              <div className="confirmed-invitation">
+                <InvitationPass invitation={personalizedInvitation} />
+                <details className="update-rsvp">
+                  <summary>Alterar a confirmação de presença</summary>
+                  <RsvpForm
+                    recipient={invitation.rsvpWhatsapp}
+                    invitation={personalizedInvitation}
+                  />
+                </details>
+              </div>
+            ) : (
+              <RsvpForm
+                recipient={invitation.rsvpWhatsapp}
+                invitation={personalizedInvitation}
+              />
+            )
           ) : (
             <div className="rsvp-locked" role="note" style={{ marginTop: '1.5rem' }}>
               <CheckCircle2 aria-hidden="true" />

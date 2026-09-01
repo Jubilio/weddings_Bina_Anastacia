@@ -7,6 +7,7 @@ import {
   LogOut,
   Pencil,
   Save,
+  Search,
   Trash2,
   UserPlus,
   Users,
@@ -15,6 +16,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { formatInvitationCode } from "@/lib/invitation-code";
 import type { Invitation } from "@/lib/invitation-types";
 
 type Draft = {
@@ -38,6 +40,7 @@ export function GuestAdmin() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const loadInvitations = useCallback(async () => {
     const response = await fetch("/api/admin/invitations", { cache: "no-store" });
@@ -73,6 +76,31 @@ export function GuestAdmin() {
       declined: people.filter((person) => person.attendance === "nao").length,
     };
   }, [invitations]);
+
+  const filteredInvitations = useMemo(() => {
+    const normalizedTerm = searchTerm
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .trim()
+      .toLowerCase();
+
+    if (!normalizedTerm) return invitations;
+
+    return invitations.filter((invitation) => {
+      const searchable = [
+        invitation.code,
+        formatInvitationCode(invitation.code),
+        invitation.primaryName,
+        ...invitation.invitees.map((person) => person.fullName),
+      ]
+        .join(" ")
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
+        .toLowerCase();
+
+      return searchable.includes(normalizedTerm);
+    });
+  }, [invitations, searchTerm]);
 
   async function login(event: FormEvent) {
     event.preventDefault();
@@ -303,12 +331,24 @@ export function GuestAdmin() {
             </div>
           </div>
 
-          {invitations.map((invitation) => (
+          <div className="guest-search">
+            <Search aria-hidden="true" />
+            <Input
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Pesquisar nome ou código do convite"
+              aria-label="Pesquisar convidado ou código"
+            />
+          </div>
+
+          {filteredInvitations.map((invitation) => (
             <article className="guest-card" key={invitation.id}>
               <div className="guest-card-heading">
                 <div>
                   <h2>{invitation.primaryName}</h2>
                   <p>Convite para duas pessoas</p>
+                  <code>{formatInvitationCode(invitation.code)}</code>
                 </div>
                 <div className="guest-card-actions">
                   <Button
@@ -351,11 +391,15 @@ export function GuestAdmin() {
                 {copiedCode === invitation.code ? (
                   <><Check aria-hidden="true" /> Link copiado</>
                 ) : (
-                  <><Clipboard aria-hidden="true" /> Copiar link do convite</>
+                  <><Clipboard aria-hidden="true" /> Copiar link e passe</>
                 )}
               </Button>
             </article>
           ))}
+
+          {searchTerm && filteredInvitations.length === 0 ? (
+            <p className="admin-empty-search">Nenhum convite corresponde à pesquisa.</p>
+          ) : null}
         </section>
       </section>
     </main>
