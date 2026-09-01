@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
+import { RandomLoveMessage } from "@/components/random-love-message";
 import { MusicPlayer } from "@/components/music-player";
 import { getInvitationByCode } from "@/lib/invitations";
 
@@ -132,11 +133,7 @@ export default async function Home({
             </aside>
           ) : null}
 
-          <p className="invitation-policy-note" role="note">
-            <strong>NB:</strong> este convite é válido exclusivamente para as
-            duas pessoas nominalmente indicadas. Não se estende a crianças e
-            não permite substituição, transferência ou delegação a terceiros.
-          </p>
+          <RandomLoveMessage />
 
           <div className="announcement" role="note">
             <span className="announcement-label">19 de Dezembro de 2026</span>
@@ -181,6 +178,11 @@ export default async function Home({
             <h2 id="rsvp-title">Confirme a sua presença</h2>
             <p>Confirme individualmente a presença de cada pessoa indicada no convite.</p>
           </div>
+          <p className="invitation-policy-note compact" role="note">
+            <strong>NB:</strong> este convite é válido exclusivamente para as
+            duas pessoas nominalmente indicadas. Não se estende a crianças e
+            não permite substituição, transferência ou delegação a terceiros.
+          </p>
           {personalizedInvitation ? (
             <RsvpForm
               recipient={invitation.rsvpWhatsapp}

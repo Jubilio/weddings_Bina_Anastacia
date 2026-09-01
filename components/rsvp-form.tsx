@@ -111,11 +111,6 @@ export function RsvpForm({
 
   return (
     <form className="rsvp-form" onSubmit={handleSubmit}>
-      <p className="invitation-policy-note compact">
-        <strong>NB:</strong> este convite é exclusivo para as duas pessoas
-        indicadas. Não inclui crianças e não pode ser delegado ou transferido.
-      </p>
-
       <fieldset className="personal-rsvp-fieldset">
         <legend>Confirme cada pessoa deste convite</legend>
         <div className="personal-rsvp-list">
