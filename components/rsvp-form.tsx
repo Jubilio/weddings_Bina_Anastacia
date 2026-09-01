@@ -94,11 +94,10 @@ export function RsvpForm({
       );
 
       setSaved(true);
-      window.setTimeout(() => {
-        window.location.assign(
-          `https://wa.me/${recipient}?text=${encodeURIComponent(lines.join("\n"))}`,
-        );
-      }, 500);
+      const whatsappMessage = encodeURIComponent(lines.join("\n"));
+      window.location.assign(
+        `https://wa.me/${recipient}?text=${whatsappMessage}`,
+      );
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
