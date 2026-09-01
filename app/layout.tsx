@@ -1,31 +1,39 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const publicInvitationUrl = "https://weddings-bina-anastacia.nexovibe.workers.dev";
+const socialTitle = "Anastácia & Bina | Convite de Casamento";
+const socialDescription =
+  "Celebre connosco o casamento de Anastácia e Bina, no dia 19 de dezembro de 2026, na Cidade de Nampula.";
+
 export const metadata: Metadata = {
-  title: "Casamento de Anastácia & Bina",
-  description:
-    "Temos a honra de convidar para a celebração do nosso casamento no dia 19 de Dezembro de 2026. Confirme a sua presença!",
+  metadataBase: new URL(publicInvitationUrl),
+  title: socialTitle,
+  description: socialDescription,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Convite de Casamento | Anastácia & Bina",
-    description:
-      "Temos a honra de convidar para a celebração do nosso casamento no dia 19 de Dezembro de 2026, na Cidade de Nampula.",
+    title: socialTitle,
+    description: socialDescription,
     type: "website",
     locale: "pt_MZ",
+    url: "/",
+    siteName: "Casamento de Anastácia & Bina",
     images: [
       {
-        url: "/preview.jpg", // O utilizador deve colocar uma imagem com este nome na pasta public
+        url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Casamento de Anastácia & Bina",
+        alt: "Anastácia e Bina — 19 de dezembro de 2026",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Convite de Casamento | Anastácia & Bina",
-    description:
-      "Temos a honra de convidar para a celebração do nosso casamento no dia 19 de Dezembro de 2026.",
-    images: ["/preview.jpg"],
+    title: socialTitle,
+    description: socialDescription,
+    images: ["/og.png"],
   },
   icons: {
     icon: "/favicon.svg",
