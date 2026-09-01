@@ -65,12 +65,16 @@ function cleanInput(input: InvitationInput) {
   if (primaryName.length < 2 || primaryName.length > 120) {
     throw new Error("Indique o nome completo do convidado principal.");
   }
-  if (companions.length !== 1) {
-    throw new Error("Indique exatamente a segunda pessoa deste convite.");
+  
+  // Permite 0 ou 1 acompanhante (convite para 1 ou 2 pessoas)
+  if (companions.length > 1) {
+    throw new Error("O convite permite no máximo 2 pessoas. Indique no máximo um acompanhante.");
   }
-  if (companions[0].length < 2 || companions[0].length > 120) {
-    throw new Error("Indique o nome completo da segunda pessoa.");
+  
+  if (companions.length === 1 && (companions[0].length < 2 || companions[0].length > 120)) {
+    throw new Error("Indique o nome completo do acompanhante.");
   }
+  
   return { primaryName, companions, phone };
 }
 

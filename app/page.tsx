@@ -123,13 +123,15 @@ export default async function Home({
 
           {personalizedInvitation ? (
             <aside className="personal-invitation" aria-label="Pessoas convidadas">
-              <span>Este convite é especialmente para</span>
+              <span>Este convite é exclusivamente para</span>
               <h2>
                 {personalizedInvitation.invitees
                   .map((person) => person.fullName)
-                  .join(" • ")}
+                  .join(" e ")}
               </h2>
-              <p>Esperamos celebrar este momento convosco.</p>
+              <p>
+                <strong>Exclusivo e intransmissível.</strong> Este convite é pessoal e não se estende a outras pessoas, crianças ou acompanhantes.
+              </p>
             </aside>
           ) : null}
 
@@ -212,11 +214,17 @@ export default async function Home({
             <h2 id="rsvp-title">Confirme a sua presença</h2>
             <p>Confirme individualmente a presença de cada pessoa indicada no convite.</p>
           </div>
-          <p className="invitation-policy-note compact" role="note">
-            <strong>NB:</strong> este convite é válido exclusivamente para as
-            duas pessoas nominalmente indicadas. Não se estende a crianças e
-            não permite substituição, transferência ou delegação a terceiros.
-          </p>
+          <div className="invitation-policy-note" role="note" aria-label="Termos e condições do convite">
+            <div style={{ marginBottom: '0.5rem' }}>
+              <strong>ℹ️ Informações Importantes sobre este Convite:</strong>
+            </div>
+            <ul style={{ fontSize: '0.95rem', lineHeight: '1.6', margin: '0.5rem 0 0 1.25rem' }}>
+              <li>✋ <strong>Exclusivamente nominal:</strong> Válido exclusivamente para a(s) pessoa(s) nominalmente indicada(s).</li>
+              <li>🚫 <strong>Intransmissível:</strong> Não permite substituição, transferência ou delegação a terceiros.</li>
+              <li>👶 <strong>Sem crianças:</strong> O convite não se estende a acompanhantes, crianças ou dependentes não nomeados.</li>
+              <li>✅ <strong>Confirmação individual:</strong> Cada pessoa nomeada deve responder individualmente a esta confirmação.</li>
+            </ul>
+          </div>
           {personalizedInvitation ? (
             <RsvpForm
               recipient={invitation.rsvpWhatsapp}

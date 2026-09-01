@@ -43,7 +43,7 @@ export function RsvpForm({
     const note = String(formData.get("note") ?? "").trim();
 
     if (!allAnswered) {
-      setError("Confirme a presença de todas as pessoas indicadas no convite.");
+      setError("Confirme individualmente a presença de TODAS as pessoas indicadas no convite. Cada um deve responder 'Sim' ou 'Não'.");
       return;
     }
 
@@ -112,7 +112,10 @@ export function RsvpForm({
   return (
     <form className="rsvp-form" onSubmit={handleSubmit}>
       <fieldset className="personal-rsvp-fieldset">
-        <legend>Confirme cada pessoa deste convite</legend>
+        <legend>Confirme individualmente cada pessoa nomeada neste convite</legend>
+        <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
+          <strong>Atenção:</strong> Este convite é exclusivo e intransmissível. Cada pessoa deve confirmar individualmente a sua presença.
+        </p>
         <div className="personal-rsvp-list">
           {invitation.invitees.map((person) => (
             <div className="personal-rsvp-row" key={person.id}>
@@ -136,6 +139,7 @@ export function RsvpForm({
                 }}
                 className="person-attendance-options"
                 required
+                aria-label={`Confirmação de presença para ${person.fullName}`}
               >
                 <Label
                   htmlFor={`${person.id}-yes`}
@@ -185,7 +189,9 @@ export function RsvpForm({
       </Button>
 
       <p className="form-note">
-        A confirmação ficará guardada e será também enviada aos noivos pelo WhatsApp.
+        ✅ A confirmação ficará guardada individualmente para cada pessoa e será também enviada aos noivos pelo WhatsApp.
+        <br />
+        <strong>⚠️ Lembre-se: Este convite é exclusivo, intransmissível e não se estende a crianças ou acompanhantes.</strong>
       </p>
     </form>
   );

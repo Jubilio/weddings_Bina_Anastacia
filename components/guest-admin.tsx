@@ -228,7 +228,7 @@ export function GuestAdmin() {
             <UserPlus aria-hidden="true" />
             <div>
               <p>{editingId ? "Editar convite" : "Novo convite"}</p>
-              <span>Os nomes aparecerão no convite personalizado.</span>
+              <span>Indique 1 ou 2 nomes que aparecerão no convite personalizado e intransmissível.</span>
             </div>
           </div>
 
@@ -247,7 +247,7 @@ export function GuestAdmin() {
           </div>
 
           <div className="form-field">
-            <Label htmlFor="second-name">Segunda pessoa convidada</Label>
+            <Label htmlFor="second-name">Segunda pessoa convidada (opcional)</Label>
             <Input
               id="second-name"
               value={draft.companions[0] ?? ""}
@@ -256,7 +256,6 @@ export function GuestAdmin() {
               }
               placeholder="Nome completo"
               maxLength={120}
-              required
             />
           </div>
 
@@ -274,8 +273,11 @@ export function GuestAdmin() {
           </div>
 
           <p className="admin-policy-note">
-            Cada link é válido apenas para estas duas pessoas, sem extensão a
-            crianças e sem substituição, transferência ou delegação.
+            <strong>⚠️ Política de Convite:</strong><br/>
+            • Exclusivamente nominal para a(s) pessoa(s) indicada(s)<br/>
+            • Intransmissível: sem substituição, transferência ou delegação<br/>
+            • Sem crianças ou acompanhantes não nomeados<br/>
+            • Cada pessoa deve confirmar individualmente a sua presença
           </p>
 
           <div className="editor-actions">
