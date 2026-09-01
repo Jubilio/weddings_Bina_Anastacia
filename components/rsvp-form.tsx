@@ -1,89 +1,145 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { AlertCircle, Send } from "lucide-react";
+import { useMemo, useState, type FormEvent } from "react";
+import { CheckCircle2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import type { InvitedPair } from "@/lib/invitation-code";
+import type { Invitation } from "@/lib/invitation-types";
 
-type Attendance = "sim" | "nao" | "";
+type Answer = "sim" | "nao" | "";
 
 export function RsvpForm({
   recipient,
-  invitedNames,
+  invitation,
 }: {
   recipient: string;
-  invitedNames: InvitedPair;
+  invitation: Invitation;
 }) {
-  const [answers, setAnswers] = useState<[Attendance, Attendance]>(["", ""]);
+  const [answers, setAnswers] = useState<Record<string, Answer>>(() =>
+    Object.fromEntries(
+      invitation.invitees.map((person) => [
+        person.id,
+        person.attendance === "pendente" ? "" : person.attendance,
+      ]),
+    ),
+  );
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const allAnswered = useMemo(
+    () =>
+      invitation.invitees.every((person) =>
+        ["sim", "nao"].includes(answers[person.id]),
+      ),
+    [answers, invitation],
+  );
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (answers.some((answer) => !answer)) {
-      setError("Confirme a presença de cada uma das duas pessoas indicadas.");
+    const formData = new FormData(event.currentTarget);
+    const note = String(formData.get("note") ?? "").trim();
+
+    if (!allAnswered) {
+      setError("Confirme a presença de todas as pessoas indicadas no convite.");
       return;
     }
 
-    const note = String(new FormData(event.currentTarget).get("note") ?? "").trim();
-    const lines = [
-      "Olá, Anastácia e Bina! 🌿",
-      "",
-      "Confirmação do convite de casamento:",
-      ...invitedNames.map(
-        (name, index) =>
-          `${answers[index] === "sim" ? "✅" : "❌"} ${name}: ${
-            answers[index] === "sim" ? "presente" : "não poderá comparecer"
-          }`,
-      ),
-    ];
-
-    if (note) lines.push("", `Mensagem: ${note}`);
+    setSaving(true);
     setError("");
-    window.open(
-      `https://wa.me/${recipient}?text=${encodeURIComponent(lines.join("\n"))}`,
-      "_blank",
-      "noopener,noreferrer",
-    );
+    try {
+      const responses = invitation.invitees.map((person) => ({
+        inviteeId: person.id,
+        attendance: answers[person.id] as "sim" | "nao",
+      }));
+      const response = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: invitation.code, responses, note }),
+      });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(data.error ?? "Não foi possível confirmar.");
+      }
+
+      const lines = [
+        "Olá, Anastácia e Bina! 🌿",
+        "",
+        `Confirmação do convite de ${invitation.primaryName}:`,
+        ...invitation.invitees.map(
+          (person) =>
+            `${answers[person.id] === "sim" ? "✅" : "❌"} ${person.fullName}: ${
+              answers[person.id] === "sim"
+                ? "presente"
+                : "não poderá comparecer"
+            }`,
+        ),
+      ];
+      if (note) lines.push("", `Mensagem: ${note}`);
+
+      setSaved(true);
+      window.setTimeout(() => {
+        window.location.assign(
+          `https://wa.me/${recipient}?text=${encodeURIComponent(lines.join("\n"))}`,
+        );
+      }, 500);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Não foi possível confirmar.",
+      );
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <form className="rsvp-form" onSubmit={handleSubmit}>
-      <div className="invitation-policy-note compact">
-        <AlertCircle aria-hidden="true" />
-        <p>
-          <strong>NB:</strong> convite válido exclusivamente para estas duas
-          pessoas. Não inclui crianças e não pode ser delegado ou transferido.
-        </p>
-      </div>
+      <p className="invitation-policy-note compact">
+        <strong>NB:</strong> este convite é exclusivo para as duas pessoas
+        indicadas. Não inclui crianças e não pode ser delegado ou transferido.
+      </p>
 
       <fieldset className="personal-rsvp-fieldset">
         <legend>Confirme cada pessoa deste convite</legend>
         <div className="personal-rsvp-list">
-          {invitedNames.map((name, index) => (
-            <div className="personal-rsvp-row" key={`${name}-${index}`}>
-              <strong>{name}</strong>
+          {invitation.invitees.map((person) => (
+            <div className="personal-rsvp-row" key={person.id}>
+              <p>
+                <strong>{person.fullName}</strong>
+                <small>
+                  {person.role === "principal"
+                    ? "Primeira pessoa"
+                    : "Segunda pessoa"}
+                </small>
+              </p>
               <RadioGroup
-                name={`attendance-${index}`}
-                value={answers[index]}
+                name={`attendance-${person.id}`}
+                value={answers[person.id] ?? ""}
                 onValueChange={(value) => {
-                  setAnswers((current) => {
-                    const next: [Attendance, Attendance] = [...current];
-                    next[index] = value as Attendance;
-                    return next;
-                  });
+                  setAnswers((current) => ({
+                    ...current,
+                    [person.id]: value as Answer,
+                  }));
                   setError("");
                 }}
                 className="person-attendance-options"
                 required
               >
-                <Label className="person-attendance-choice" htmlFor={`attendance-${index}-yes`}>
-                  <RadioGroupItem id={`attendance-${index}-yes`} value="sim" /> Sim
+                <Label
+                  htmlFor={`${person.id}-yes`}
+                  className="person-attendance-choice yes"
+                >
+                  <RadioGroupItem id={`${person.id}-yes`} value="sim" /> Sim
                 </Label>
-                <Label className="person-attendance-choice" htmlFor={`attendance-${index}-no`}>
-                  <RadioGroupItem id={`attendance-${index}-no`} value="nao" /> Não
+                <Label
+                  htmlFor={`${person.id}-no`}
+                  className="person-attendance-choice no"
+                >
+                  <RadioGroupItem id={`${person.id}-no`} value="nao" /> Não
                 </Label>
               </RadioGroup>
             </div>
@@ -93,15 +149,36 @@ export function RsvpForm({
 
       <div className="form-field">
         <Label htmlFor="note">Mensagem aos noivos (opcional)</Label>
-        <Textarea id="note" name="note" rows={3} placeholder="Escreva uma breve mensagem" />
+        <Textarea
+          id="note"
+          name="note"
+          rows={3}
+          maxLength={1000}
+          placeholder="Escreva uma breve mensagem"
+        />
       </div>
 
-      <p className="form-error" role="alert" aria-live="polite">{error}</p>
+      <p className="form-error" role="alert" aria-live="polite">
+        {error}
+      </p>
 
-      <Button type="submit" size="lg" className="rsvp-submit">
-        <Send aria-hidden="true" /> Enviar confirmação por WhatsApp
+      <Button
+        type="submit"
+        size="lg"
+        className="rsvp-submit"
+        disabled={saving || saved}
+      >
+        {saved ? <CheckCircle2 aria-hidden="true" /> : <Send aria-hidden="true" />}
+        {saved
+          ? "Confirmação guardada"
+          : saving
+            ? "A guardar…"
+            : "Enviar confirmação por WhatsApp"}
       </Button>
-      <p className="form-note">Os dois nomes são definidos pelo casal e não podem ser alterados aqui.</p>
+
+      <p className="form-note">
+        A confirmação ficará guardada e será também enviada aos noivos pelo WhatsApp.
+      </p>
     </form>
   );
 }

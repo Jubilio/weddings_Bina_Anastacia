@@ -10,7 +10,9 @@ Website responsivo para um convite de casamento, com visual elegante, texto emoc
 - lista de presentes e formas de contribuição;
 - secção de localização e detalhes do evento;
 - música de fundo opcional;
-- compatibilidade com Cloudflare D1 via Drizzle ORM.
+- gestão persistente de convites e confirmações no Cloudflare D1;
+- links personalizados com exatamente dois nomes, sem substituição ou extensão a crianças;
+- painel protegido em `/admin`, com estados pendente, confirmado e não comparece.
 
 ## Stack
 
@@ -27,7 +29,7 @@ Website responsivo para um convite de casamento, com visual elegante, texto emoc
 
 - Node.js 22.13 ou superior
 - npm
-- Conta e acesso ao Cloudflare (se quiser usar a base de dados em vez do modo sem BD local)
+- Conta e acesso ao Cloudflare Workers e D1
 
 ## Instalação
 
@@ -56,7 +58,7 @@ npm run build
 - [components/rsvp-form.tsx](components/rsvp-form.tsx): formulário de confirmação
 - [components/random-love-message.tsx](components/random-love-message.tsx): mensagem amorosa aleatória
 - [db/schema.ts](db/schema.ts): definição do modelo de dados
-- [wrangler.toml](wrangler.toml): configuração do Cloudflare D1
+- [vite.config.ts](vite.config.ts): configuração do Worker e da ligação D1
 - [scripts/build-verified.sh](scripts/build-verified.sh): script de build validado
 
 ## Configuração do convite
@@ -78,9 +80,9 @@ Este projecto usa Cloudflare D1 com Drizzle.
 
 ### Configuração do D1
 
-A ligação está definida em [wrangler.toml](wrangler.toml):
+A ligação é incluída no Worker por [vite.config.ts](vite.config.ts):
 
-- binding: `casamento_bina_anastacia_db`
+- binding: `DB`
 - database_name: `casamento-bina-anastacia-db`
 
 O schema da tabela de convidados está em [db/schema.ts](db/schema.ts).
@@ -91,7 +93,15 @@ Para gerar as migrações do Drizzle:
 npm run db:generate
 ```
 
-Se a base de dados não estiver disponível localmente, a aplicação tenta continuar sem ela e mostra a interface principal normalmente.
+No Cloudflare Workers Builds, use estes comandos:
+
+- Build command: `npm run build`
+- Deploy command: `npm run deploy:cloudflare`
+
+O comando de deploy aplica primeiro as migrações pendentes ao D1 e só depois
+publica o Worker. Configure também um segredo de execução chamado
+`ADMIN_PASSWORD`; ele protege o painel `/admin` e não deve ser guardado no
+repositório.
 
 ## Personalização final antes de partilhar
 
