@@ -64,20 +64,34 @@ export function RsvpForm({
         throw new Error(data.error ?? "Não foi possível confirmar.");
       }
 
+      const allAttending = invitation.invitees.every(
+        (person) => answers[person.id] === "sim",
+      );
       const lines = [
-        "Olá, Anastácia e Bina! 🌿",
+        "💍 *Confirmação de Presença*",
+        "*Casamento de Anastácia & Bina*",
         "",
-        `Confirmação do convite de ${invitation.primaryName}:`,
+        allAttending
+          ? "É com muita alegria que confirmamos a nossa presença neste dia tão especial. 🤍"
+          : "Com carinho, enviamos a nossa resposta ao vosso convite para este dia tão especial. 🤍",
+        "",
+        `*Convite em nome de ${invitation.primaryName}*`,
         ...invitation.invitees.map(
           (person) =>
-            `${answers[person.id] === "sim" ? "✅" : "❌"} ${person.fullName}: ${
+            `${answers[person.id] === "sim" ? "✅" : "❌"} *${person.fullName}* — ${
               answers[person.id] === "sim"
-                ? "presente"
+                ? "presença confirmada"
                 : "não poderá comparecer"
             }`,
         ),
       ];
-      if (note) lines.push("", `Mensagem: ${note}`);
+      if (note) lines.push("", `💌 *Mensagem:* ${note}`);
+      lines.push(
+        "",
+        allAttending
+          ? "É uma alegria fazer parte desta linda história. Que este novo capítulo seja repleto de amor, cumplicidade e felicidade! ✨🥂"
+          : "Agradecemos o carinho do convite e desejamos-vos uma celebração inesquecível, repleta de amor e alegria! ✨🥂",
+      );
 
       setSaved(true);
       window.setTimeout(() => {
