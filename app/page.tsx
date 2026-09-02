@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   CheckCircle2,
+  Clock3,
   Gift,
   Heart,
   MapPin,
@@ -276,19 +277,10 @@ export default async function Home({
             <p>
               {personalizedInvitation?.respondedAt
                 ? "Este link identifica oficialmente o seu convite e permanece disponível sempre que precisar de o apresentar."
-                : "Confirme individualmente a presença de cada pessoa indicada no convite."}
+                : personalizedInvitation
+                  ? "Confirme individualmente a presença de cada pessoa indicada neste convite."
+                  : "A confirmação deve ser realizada através do link personalizado enviado pelo casal."}
             </p>
-          </div>
-          <div className="invitation-policy-note" role="note" aria-label="Termos e condições do convite">
-            <div style={{ marginBottom: '0.5rem' }}>
-              <strong>ℹ️ Informações Importantes sobre este Convite:</strong>
-            </div>
-            <ul style={{ fontSize: '0.95rem', lineHeight: '1.6', margin: '0.5rem 0 0 1.25rem' }}>
-              <li>✋ <strong>Exclusivamente nominal:</strong> Válido exclusivamente para a(s) pessoa(s) nominalmente indicada(s).</li>
-              <li>🚫 <strong>Intransmissível:</strong> Não permite substituição, transferência ou delegação a terceiros.</li>
-              <li>👶 <strong>Sem crianças:</strong> O convite não se estende a acompanhantes, crianças ou dependentes não nomeados.</li>
-              <li>✅ <strong>Confirmação individual:</strong> Cada pessoa nomeada deve responder individualmente a esta confirmação.</li>
-            </ul>
           </div>
           {personalizedInvitation ? (
             personalizedInvitation.respondedAt ? (
@@ -303,10 +295,19 @@ export default async function Home({
                 </details>
               </div>
             ) : (
-              <RsvpForm
-                recipient={invitation.rsvpWhatsapp}
-                invitation={personalizedInvitation}
-              />
+              <div className="pending-rsvp">
+                <div className="rsvp-pending-note" role="status">
+                  <Clock3 aria-hidden="true" />
+                  <p>
+                    <strong>A confirmação deste convite ainda está pendente.</strong>
+                    <span>Indique abaixo quem poderá estar presente.</span>
+                  </p>
+                </div>
+                <RsvpForm
+                  recipient={invitation.rsvpWhatsapp}
+                  invitation={personalizedInvitation}
+                />
+              </div>
             )
           ) : (
             <div className="rsvp-locked" role="note" style={{ marginTop: '1.5rem' }}>
