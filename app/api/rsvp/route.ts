@@ -1,5 +1,6 @@
 import { saveRsvp } from "@/lib/invitations";
 import type { Attendance } from "@/lib/invitation-types";
+import { enforceRateLimit, RateLimitError } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,12 @@ export async function POST(request: Request) {
       throw new Error("Resposta incompleta.");
     }
 
+    await enforceRateLimit(request, {
+      scope: `rsvp:${payload.code}`,
+      maxAttempts: 12,
+      windowSeconds: 10 * 60,
+    });
+
     const invitation = await saveRsvp(
       payload.code,
       payload.responses,
@@ -27,7 +34,10 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : "Não foi possível confirmar." },
-      { status: 400 },
+      {
+        status: error instanceof RateLimitError ? 429 : 400,
+        headers: error instanceof RateLimitError ? { "Retry-After": String(error.retryAfter) } : undefined,
+      },
     );
   }
 }

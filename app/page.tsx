@@ -1,10 +1,14 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import {
   ArrowUpRight,
+  CalendarDays,
   CheckCircle2,
   Clock3,
   Gift,
   Heart,
   MapPin,
+  Navigation,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RsvpForm } from "@/components/rsvp-form";
@@ -13,6 +17,7 @@ import { MusicPlayer } from "@/components/music-player";
 import { InvitationPass } from "@/components/invitation-pass";
 import { SplashScreen, WeddingCountdown } from "@/components/wedding-experience";
 import { getInvitationByCode } from "@/lib/invitations";
+import { rsvpIsOpen, WEDDING } from "@/lib/wedding";
 
 export const dynamic = "force-dynamic";
 
@@ -28,12 +33,19 @@ const floatingHearts = Array.from({ length: 12 }, (_, index) => ({
 const invitation = {
   family: "FAMÍLIA HILÁRIO",
   groom: "BINA MIGUEL HILÁRIO",
-  bride: "ANASTÁCIA HERMÍNIO ALBRRTO",
+  bride: "ANASTÁCIA HERMÍNIO ALBERTO",
   rsvpHref: "#confirmacao",
-  giftsHref: "/presentes",
   locationHref: "#localizacao",
   rsvpWhatsapp: "258844584164",
 };
+
+type Props = { searchParams: Promise<{ convite?: string | string[] }> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
+  return { robots: code ? { index: false, follow: false, noarchive: true } : undefined };
+}
 
 
 function Monogram() {
@@ -58,9 +70,7 @@ function SectionOrnament() {
 
 export default async function Home({
   searchParams,
-}: {
-  searchParams: Promise<{ convite?: string | string[] }>;
-}) {
+}: Props) {
   const params = await searchParams;
   const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
   const foundInvitation = code ? await getInvitationByCode(code) : null;
@@ -68,6 +78,8 @@ export default async function Home({
     foundInvitation && foundInvitation.invitees.length > 0
       ? foundInvitation
       : null;
+  const canRespond = rsvpIsOpen();
+  const giftsHref = personalizedInvitation ? `/presentes?convite=${personalizedInvitation.code}` : "/presentes";
 
   return (
     <main className="invitation-page">
@@ -135,9 +147,7 @@ export default async function Home({
                   .map((person) => person.fullName)
                   .join(" e ")}
               </h2>
-              <p>
-                <strong>Exclusivo e intransmissível.</strong> Este convite é pessoal e não se estende a outras pessoas, crianças ou acompanhantes.
-              </p>
+              <p>Esperamos celebrar este momento convosco.</p>
             </aside>
           ) : null}
 
@@ -146,7 +156,7 @@ export default async function Home({
           <div className="announcement" role="note">
             <span className="announcement-label">19 de Dezembro de 2026</span>
             <p>
-              A cerimónia terá lugar na <strong>Cidade de Nampula, na Conservatória, pelas 10h00</strong>, e o almoço será servido no <strong>Salão de Eventos da Academia Militar, pelas 14h00</strong>.
+              A cerimónia terá lugar no <strong>Conservatório, na Cidade de Nampula, pelas 10h00</strong>, e o almoço será servido no <strong>Salão de Eventos da Academia Militar, pelas 14h00</strong>.
             </p>
           </div>
 
@@ -161,9 +171,16 @@ export default async function Home({
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="secondary-action">
-              <a href={invitation.giftsHref}>
+              <a href={giftsHref}>
                 <Gift aria-hidden="true" />
                 Ver presentes
+                <ArrowUpRight className="action-arrow" aria-hidden="true" />
+              </a>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="secondary-action">
+              <a href="/evento.ics" download>
+                <CalendarDays aria-hidden="true" />
+                Adicionar ao calendário
                 <ArrowUpRight className="action-arrow" aria-hidden="true" />
               </a>
             </Button>
@@ -207,13 +224,12 @@ export default async function Home({
             </div>
 
             <figure className="couple-photo couple-photo-feature">
-              <img
+              <Image
                 src="/images/noivos-momento.png"
                 alt="Anastácia e Bina num momento carinhoso"
                 width={1512}
                 height={1336}
-                loading="lazy"
-                decoding="async"
+                sizes="(max-width: 760px) 100vw, 46vw"
               />
               <figcaption>O amor vive nos pequenos momentos.</figcaption>
             </figure>
@@ -221,13 +237,12 @@ export default async function Home({
 
           <div className="story-chapter story-chapter-second">
             <figure className="couple-photo couple-photo-portrait">
-              <img
+              <Image
                 src="/images/noivos-retrato.png"
                 alt="Anastácia e Bina juntos, vestidos de branco"
                 width={960}
                 height={1280}
-                loading="lazy"
-                decoding="async"
+                sizes="(max-width: 760px) 100vw, 38vw"
               />
               <figcaption>Dois caminhos, um só futuro.</figcaption>
             </figure>
@@ -290,13 +305,14 @@ export default async function Home({
                 <InvitationPass invitation={personalizedInvitation} />
                 <details className="update-rsvp">
                   <summary>Alterar a confirmação de presença</summary>
-                  <RsvpForm
-                    recipient={invitation.rsvpWhatsapp}
-                    invitation={personalizedInvitation}
-                  />
+                  {canRespond ? (
+                    <RsvpForm recipient={invitation.rsvpWhatsapp} invitation={personalizedInvitation} />
+                  ) : (
+                    <p className="rsvp-deadline-closed">O prazo para alterar a confirmação terminou.</p>
+                  )}
                 </details>
               </div>
-            ) : (
+            ) : canRespond ? (
               <div className="pending-rsvp">
                 <div className="rsvp-pending-note" role="status">
                   <Clock3 aria-hidden="true" />
@@ -310,18 +326,24 @@ export default async function Home({
                   invitation={personalizedInvitation}
                 />
               </div>
+            ) : (
+              <div className="rsvp-locked" role="status">
+                <Clock3 aria-hidden="true" />
+                <p>O prazo para confirmar a presença terminou.</p>
+              </div>
             )
           ) : (
-            <div className="rsvp-locked" role="note" style={{ marginTop: '1.5rem' }}>
+            <div className="rsvp-locked" role="note">
               <CheckCircle2 aria-hidden="true" />
               <p>
                 Para assegurar a correta identificação dos convidados, a
                 confirmação de presença deverá ser realizada exclusivamente
                 através do link personalizado enviado pelo casal, no qual
-                constam os dois nomes associados ao convite.
+                constam os nomes associados ao convite.
               </p>
             </div>
           )}
+          <p className="rsvp-deadline">Prazo de confirmação: <strong>{WEDDING.rsvpDeadlineLabel}</strong></p>
         </section>
 
 
@@ -331,15 +353,21 @@ export default async function Home({
           </div>
           <p className="detail-kicker">Onde celebrar</p>
           <h2 id="location-title">Localização</h2>
-          <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div>
-              <strong>Cerimónia (10h00):</strong><br/>
-              Conservatório, Cidade de Nampula
-            </div>
-            <div>
-              <strong>Almoço (14h00):</strong><br/>
-              Salão de eventos da Academia Militar, Cidade de Nampula
-            </div>
+          <div className="location-grid">
+            <article className="location-card">
+              <span>Cerimónia — {WEDDING.ceremony.time}</span>
+              <strong>{WEDDING.ceremony.name}</strong>
+              <Button asChild variant="outline"><a href={WEDDING.ceremony.mapsUrl} target="_blank" rel="noreferrer">
+                <Navigation aria-hidden="true" /> Abrir no Google Maps
+              </a></Button>
+            </article>
+            <article className="location-card">
+              <span>Almoço — {WEDDING.reception.time}</span>
+              <strong>{WEDDING.reception.name}</strong>
+              <Button asChild variant="outline"><a href={WEDDING.reception.mapsUrl} target="_blank" rel="noreferrer">
+                <Navigation aria-hidden="true" /> Abrir no Google Maps
+              </a></Button>
+            </article>
           </div>
         </section>
 

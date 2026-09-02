@@ -30,6 +30,10 @@ test("packages the invitation and RSVP database migration", async () => {
 
   assert.match(sql, /CREATE TABLE `invitations`/);
   assert.match(sql, /CREATE TABLE `invitees`/);
+  assert.match(sql, /CREATE TABLE `gift_reservations`/);
+  assert.match(sql, /gift_reservations_gift_key_unique/);
+  assert.match(sql, /CREATE TABLE `security_rate_limits`/);
+  assert.match(sql, /ADD `checked_in_at` integer/);
 });
 
 test("applies D1 migrations before deploying", async () => {

@@ -15,6 +15,13 @@
       "when": 1788246636485,
       "tag": "0001_mysterious_ronan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788351778678,
+      "tag": "0002_smooth_human_cannonball",
+      "breakpoints": true
     }
   ]
 }

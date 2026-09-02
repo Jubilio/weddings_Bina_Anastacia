@@ -1,121 +1,52 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Smartphone, WalletCards } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ContributionCopyButton, GiftRegistry } from "@/components/gift-registry";
 import { RandomLoveMessage } from "@/components/random-love-message";
+import { listGiftReservations } from "@/lib/gift-reservations";
+import { GIFT_ITEMS } from "@/lib/gifts";
 
-const giftItems = [
-  "Tapetes grandes para a sala",
-  "Televisão de 55 polegadas",
-  "Relógio de parede",
-  "Mesa de centro",
-  "Quadros decorativos",
-  "Rack para TV",
-  "Vasos decorativos",
-  "Sofá",
-  "Cortinas",
-  "Mesa de jantar",
-  "Jogo de taças",
-  "Jogo de xícaras de café",
-  "Jogo de xícaras de chá",
-  "Kit de tábuas para cortar carne",
-  "Batedeira",
-  "Air fryer",
-  "Chaleira elétrica",
-  "Micro-ondas",
-  "Taças de sobremesa",
-  "Congelador",
-  "Kit de toalhas de mão",
-  "Jogo de panelas",
-  "Tapetes para casa de banho",
-  "Jogos de lençóis",
-  "Conjunto de facas",
-  "Jogos de pratos",
-  "Jarra para sumo",
-  "Kit de potes para temperos",
-  "Torradeira",
-  "Kit de colheres de pau",
-  "Climatizador",
-  "Kit de Pyrex com tampa",
-  "Forno elétrico",
-  "Kit de talheres",
-  "Máquina de lavar roupa",
-  "Bandejas diversas",
-  "Panela de pressão elétrica",
-  "Boleiro de vidro",
-  "Jogos de copos de vidro liso",
-  "Aspirador de pó",
-];
+export const dynamic = "force-dynamic";
+type Props = { searchParams: Promise<{ convite?: string | string[] }> };
 
-function SectionOrnament() {
-  return (
-    <div className="ornament" aria-hidden="true">
-      <span />
-      <i>✦</i>
-      <span />
-    </div>
-  );
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
+  return { title: "Lista de presentes | Anastácia & Bina",
+    robots: code ? { index: false, follow: false, noarchive: true } : undefined };
 }
 
-export default function Presentes() {
-  return (
-    <main className="invitation-page">
-      <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
-      <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+function SectionOrnament() {
+  return <div className="ornament" aria-hidden="true"><span /><i>✦</i><span /></div>;
+}
 
-      <article className="invitation-shell">
-        <section className="gifts-section" style={{ padding: '4rem 1rem' }}>
-          
-          <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'center' }}>
-            <Button asChild variant="outline">
-              <Link href="/">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Voltar ao início
-              </Link>
-            </Button>
-          </div>
-
-          <div className="section-heading">
-            <SectionOrnament />
-            <p className="detail-kicker">Com carinho</p>
-            <h2>Lista de presentes</h2>
-            <p>
-              A vossa presença será sempre o nosso maior presente. Para quem
-              desejar abençoar esta nova etapa, deixamos algumas sugestões.
-            </p>
-          </div>
-
-          <RandomLoveMessage />
-
-          <ol className="gift-list">
-            {giftItems.map((item, index) => (
-              <li key={item}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <p>{item}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="contribution-wrap">
-            <p className="contribution-title">Formas de contribuição</p>
-            <div className="contribution-grid">
-              <div className="contribution-card">
-                <WalletCards aria-hidden="true" />
-                <span>Millennium BIM</span>
-                <strong>1155844629</strong>
-              </div>
-              <div className="contribution-card">
-                <Smartphone aria-hidden="true" />
-                <span>M-Pesa</span>
-                <strong>84 458 4164</strong>
-              </div>
-              <div className="contribution-card">
-                <Smartphone aria-hidden="true" />
-                <span>e-Mola</span>
-                <strong>86 960 4617</strong>
-              </div>
-            </div>
-          </div>
-        </section>
-      </article>
-    </main>
-  );
+export default async function Presentes({ searchParams }: Props) {
+  const params = await searchParams;
+  const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
+  const { invitation, reservations } = await listGiftReservations(code);
+  const backHref = invitation ? `/?convite=${invitation.code}` : "/";
+  return <main className="invitation-page">
+    <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
+    <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+    <article className="invitation-shell gifts-page-shell"><section className="gifts-section gifts-page-section">
+      <div className="gifts-back-link"><Button asChild variant="outline"><Link href={backHref}>
+        <ArrowLeft aria-hidden="true" /> Voltar ao convite
+      </Link></Button></div>
+      <div className="section-heading"><SectionOrnament /><p className="detail-kicker">Com carinho</p>
+        <h1>Lista de presentes</h1><p>A vossa presença será sempre o nosso maior presente. Para quem desejar abençoar esta nova etapa, deixamos algumas sugestões.</p>
+      </div>
+      {invitation ? <div className="gift-personalized-note">Lista aberta através do convite de <strong>{invitation.primaryName}</strong>.</div> : null}
+      <RandomLoveMessage />
+      <GiftRegistry gifts={GIFT_ITEMS} initialReservations={reservations} invitationCode={invitation?.code ?? null} />
+      <div className="contribution-wrap"><p className="contribution-title">Formas de contribuição</p>
+        <p className="contribution-help">Também pode contribuir diretamente. Use o botão para copiar os dados sem erros.</p>
+        <div className="contribution-grid">
+          <div className="contribution-card"><WalletCards aria-hidden="true" /><span>Millennium BIM</span><strong>1155844629</strong><ContributionCopyButton value="1155844629" /></div>
+          <div className="contribution-card"><Smartphone aria-hidden="true" /><span>M-Pesa</span><strong>84 458 4164</strong><ContributionCopyButton value="844584164" /></div>
+          <div className="contribution-card"><Smartphone aria-hidden="true" /><span>e-Mola</span><strong>86 960 4617</strong><ContributionCopyButton value="869604617" /></div>
+        </div>
+      </div>
+    </section></article>
+  </main>;
 }

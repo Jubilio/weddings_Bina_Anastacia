@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import Image from "next/image";
 
 const WEDDING_DATE = "2026-12-19T10:00:00+02:00";
 const WEDDING_TIME = new Date(WEDDING_DATE).getTime();
@@ -50,6 +51,14 @@ export function SplashScreen() {
       aria-labelledby="splash-title"
       aria-describedby="splash-description"
     >
+      <Image
+        src="/images/noivos-momento.png"
+        alt="Anastácia e Bina num momento de carinho"
+        fill
+        priority
+        sizes="100vw"
+        className="splash-background-image"
+      />
       <div className="splash-card">
         <div className="splash-ornament" aria-hidden="true">
           <span />

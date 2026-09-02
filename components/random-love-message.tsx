@@ -19,17 +19,24 @@ export function RandomLoveMessage() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    setIndex(Math.floor(Math.random() * weddingMessages.length));
+    let transitionTimer: number | undefined;
+    const initialTimer = window.setTimeout(() => {
+      setIndex(Math.floor(Math.random() * weddingMessages.length));
+    }, 0);
 
     const interval = window.setInterval(() => {
       setVisible(false);
-      window.setTimeout(() => {
+      transitionTimer = window.setTimeout(() => {
         setIndex((current) => (current + 1) % weddingMessages.length);
         setVisible(true);
       }, 500);
     }, 12000);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(initialTimer);
+      if (transitionTimer) window.clearTimeout(transitionTimer);
+      window.clearInterval(interval);
+    };
   }, []);
 
   return (
