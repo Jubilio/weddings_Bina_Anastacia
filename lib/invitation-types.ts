@@ -40,6 +40,7 @@ export type Invitation = {
   phone: string | null;
   responseNote: string | null;
   respondedAt: number | null;
+  checkedInAt: number | null;
   createdAt: number;
   invitees: Invitee[]; // Array com 1 ou 2 pessoas (nunca vazio, nunca mais de 2)
 };

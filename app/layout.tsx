@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(publicInvitationUrl),
   title: socialTitle,
   description: socialDescription,
+  referrer: "no-referrer",
   alternates: {
     canonical: "/",
   },

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import type { Invitation } from "@/lib/invitation-types";
+import { WEDDING } from "@/lib/wedding";
 
 type Answer = "sim" | "nao" | "";
 
@@ -43,7 +44,7 @@ export function RsvpForm({
     const note = String(formData.get("note") ?? "").trim();
 
     if (!allAnswered) {
-      setError("Confirme individualmente a presença de TODAS as pessoas indicadas no convite. Cada um deve responder 'Sim' ou 'Não'.");
+      setError("Indique “Sim” ou “Não” para cada pessoa deste convite.");
       return;
     }
 
@@ -112,10 +113,7 @@ export function RsvpForm({
   return (
     <form className="rsvp-form" onSubmit={handleSubmit}>
       <fieldset className="personal-rsvp-fieldset">
-        <legend>Confirme individualmente cada pessoa nomeada neste convite</legend>
-        <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-          <strong>Atenção:</strong> Este convite é exclusivo e intransmissível. Cada pessoa deve confirmar individualmente a sua presença.
-        </p>
+        <legend>Confirme cada pessoa deste convite</legend>
         <div className="personal-rsvp-list">
           {invitation.invitees.map((person) => (
             <div className="personal-rsvp-row" key={person.id}>
@@ -189,9 +187,9 @@ export function RsvpForm({
       </Button>
 
       <p className="form-note">
-        ✅ A confirmação ficará guardada individualmente para cada pessoa e será também enviada aos noivos pelo WhatsApp.
+        A confirmação ficará guardada e será também enviada aos noivos pelo WhatsApp.
         <br />
-        <strong>⚠️ Lembre-se: Este convite é exclusivo, intransmissível e não se estende a crianças ou acompanhantes.</strong>
+        Prazo: <strong>{WEDDING.rsvpDeadlineLabel}</strong>.
       </p>
     </form>
   );
