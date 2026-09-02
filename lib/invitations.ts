@@ -1,4 +1,4 @@
-import { database } from "@/lib/database";
+import { database, ensureDatabaseFeatures } from "@/lib/database";
 import { normalizeInvitationCode } from "@/lib/invitation-code";
 import { rsvpIsOpen } from "@/lib/wedding";
 import type { Attendance, Invitation, InvitationInput, Invitee } from "@/lib/invitation-types";
@@ -41,6 +41,7 @@ function cleanInput(input: InvitationInput) {
 function makeCode() { return crypto.randomUUID().replaceAll("-", "").slice(0, 18); }
 
 export async function listInvitations() {
+  await ensureDatabaseFeatures();
   const db = database();
   const [invitationResult, inviteeResult] = await db.batch([
     db.prepare(`SELECT id, code, primary_name, phone, response_note, responded_at, checked_in_at, created_at FROM invitations ORDER BY created_at DESC`),
@@ -54,6 +55,7 @@ export async function listInvitations() {
 export async function getInvitationByCode(code: string) {
   const normalizedCode = normalizeInvitationCode(code);
   if (!normalizedCode) return null;
+  await ensureDatabaseFeatures();
   const db = database();
   const invitation = await db.prepare(`
     SELECT id, code, primary_name, phone, response_note, responded_at, checked_in_at, created_at

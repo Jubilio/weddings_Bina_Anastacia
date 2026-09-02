@@ -1,4 +1,4 @@
-import { database } from "@/lib/database";
+import { database, ensureDatabaseFeatures } from "@/lib/database";
 
 export class RateLimitError extends Error {
   readonly retryAfter: number;
@@ -23,6 +23,7 @@ export async function enforceRateLimit(
   request: Request,
   options: { scope: string; maxAttempts: number; windowSeconds: number },
 ) {
+  await ensureDatabaseFeatures();
   const now = Math.floor(Date.now() / 1000);
   const windowStartedAt = Math.floor(now / options.windowSeconds) * options.windowSeconds;
   const key = await hashKey(`${options.scope}:${clientAddress(request)}`);

@@ -1,4 +1,4 @@
-import { database } from "@/lib/database";
+import { database, ensureDatabaseFeatures } from "@/lib/database";
 import {
   GIFT_ITEMS,
   isGiftKey,
@@ -15,6 +15,7 @@ type AdminGiftReservationRow = GiftReservationRow & {
 export type GiftReservationAction = "reservar" | "comprado" | "libertar";
 
 export async function listGiftReservationsForAdmin() {
+  await ensureDatabaseFeatures();
   const result = await database().prepare(`
     SELECT gift_reservations.gift_key, gift_reservations.invitation_id,
            gift_reservations.status, gift_reservations.updated_at,
@@ -32,6 +33,7 @@ export async function listGiftReservationsForAdmin() {
 }
 
 export async function listGiftReservations(code?: string | null) {
+  await ensureDatabaseFeatures();
   const invitation = code ? await getInvitationByCode(code) : null;
   const result = await database().prepare(`
     SELECT gift_key, invitation_id, status FROM gift_reservations ORDER BY gift_key
@@ -45,6 +47,7 @@ export async function listGiftReservations(code?: string | null) {
 }
 
 export async function changeGiftReservation(code: string, giftKey: string, action: GiftReservationAction) {
+  await ensureDatabaseFeatures();
   if (!isGiftKey(giftKey)) throw new Error("Presente inválido.");
   const invitation = await getInvitationByCode(code);
   if (!invitation) throw new Error("Convite não encontrado.");
