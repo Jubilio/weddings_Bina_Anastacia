@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element -- The deployed Vinext image optimizer rejects local assets; direct PNG URLs preserve the supplied originals. */
 import type { Metadata } from "next";
-import Image from "next/image";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -224,12 +224,13 @@ export default async function Home({
             </div>
 
             <figure className="couple-photo couple-photo-feature">
-              <Image
+              <img
                 src="/images/noivos-momento.png"
                 alt="Anastácia e Bina num momento carinhoso"
                 width={1512}
                 height={1336}
-                sizes="(max-width: 760px) 100vw, 46vw"
+                loading="lazy"
+                decoding="async"
               />
               <figcaption>O amor vive nos pequenos momentos.</figcaption>
             </figure>
@@ -237,12 +238,13 @@ export default async function Home({
 
           <div className="story-chapter story-chapter-second">
             <figure className="couple-photo couple-photo-portrait">
-              <Image
+              <img
                 src="/images/noivos-retrato.png"
                 alt="Anastácia e Bina juntos, vestidos de branco"
                 width={960}
                 height={1280}
-                sizes="(max-width: 760px) 100vw, 38vw"
+                loading="lazy"
+                decoding="async"
               />
               <figcaption>Dois caminhos, um só futuro.</figcaption>
             </figure>

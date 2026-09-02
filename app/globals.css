@@ -2134,7 +2134,7 @@ a {
 
 .wedding-splash { isolation: isolate; background: #2d352b; }
 .wedding-splash::after { position: absolute; inset: 0; z-index: -1; background: linear-gradient(rgba(45,53,43,.69),rgba(45,53,43,.78)); content: ""; }
-.splash-background-image { z-index: -2; object-fit: cover; object-position: center 42%; }
+.splash-background-image { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; }
 .rsvp-locked { margin-top: 24px; }
 .rsvp-deadline,.rsvp-deadline-closed { margin: 18px auto 0; color: var(--muted); font-size: 12px; line-height: 1.6; text-align: center; }
 .rsvp-deadline strong,.rsvp-deadline-closed { color: var(--sage-deep); }

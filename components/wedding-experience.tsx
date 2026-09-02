@@ -1,8 +1,9 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- The deployed Vinext image optimizer rejects local assets; direct PNG URLs preserve the supplied original. */
+
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
-import Image from "next/image";
 
 const WEDDING_DATE = "2026-12-19T10:00:00+02:00";
 const WEDDING_TIME = new Date(WEDDING_DATE).getTime();
@@ -51,12 +52,13 @@ export function SplashScreen() {
       aria-labelledby="splash-title"
       aria-describedby="splash-description"
     >
-      <Image
+      <img
         src="/images/noivos-momento.png"
         alt="Anastácia e Bina num momento de carinho"
-        fill
-        priority
-        sizes="100vw"
+        width={1512}
+        height={1336}
+        fetchPriority="high"
+        decoding="async"
         className="splash-background-image"
       />
       <div className="splash-card">
