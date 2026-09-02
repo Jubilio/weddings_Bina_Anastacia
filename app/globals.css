@@ -483,37 +483,6 @@ a {
   font-size: 14px;
 }
 
-.invitation-policy-note {
-  display: flex;
-  width: min(100%, 520px);
-  gap: 10px;
-  margin: 18px auto 24px;
-  padding: 14px 16px;
-  border-left: 3px solid var(--gold);
-  background: rgba(182, 150, 88, 0.1);
-  color: var(--sage-deep);
-  font-size: 12px;
-  line-height: 1.65;
-  text-align: left;
-}
-
-.invitation-policy-note p {
-  margin: 0;
-}
-
-.invitation-policy-note svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  margin-top: 2px;
-  color: var(--gold);
-}
-
-.invitation-policy-note.compact {
-  width: 100%;
-  margin: 0 0 22px;
-}
-
 .rsvp-locked {
   display: flex;
   gap: 12px;
@@ -609,6 +578,54 @@ a {
   border-color: var(--sage);
   background: var(--sage-pale);
   color: var(--sage-deep);
+}
+
+.pending-rsvp {
+  display: grid;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.rsvp-pending-note {
+  display: flex;
+  width: min(100%, 620px);
+  margin: 0 auto;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 17px;
+  border: 1px solid rgba(182, 150, 88, 0.32);
+  background: rgba(182, 150, 88, 0.09);
+  color: var(--sage-deep);
+  text-align: left;
+}
+
+.rsvp-pending-note > svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  color: var(--gold);
+}
+
+.rsvp-pending-note p {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+}
+
+.rsvp-pending-note strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rsvp-pending-note span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pending-rsvp .rsvp-form {
+  margin-top: 0;
 }
 
 .confirmed-invitation {
