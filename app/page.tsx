@@ -65,7 +65,9 @@ export default async function Home({
   const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
   const foundInvitation = code ? await getInvitationByCode(code) : null;
   const personalizedInvitation =
-    foundInvitation?.invitees.length === 2 ? foundInvitation : null;
+    foundInvitation && foundInvitation.invitees.length > 0
+      ? foundInvitation
+      : null;
 
   return (
     <main className="invitation-page">
