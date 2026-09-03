@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { formatInvitationCode } from "@/lib/invitation-code";
 import type { Invitation } from "@/lib/invitation-types";
 import type { AdminGiftReservationView } from "@/lib/gifts";
+import { personalizedInvitationPath } from "@/lib/social-preview";
 import { WEDDING } from "@/lib/wedding";
 
 type Draft = { primaryName: string; phone: string; companions: string[] };
@@ -91,9 +92,9 @@ export function GuestAdmin() {
     setBusy(true); try { const response = await fetch(`/api/admin/invitations?id=${encodeURIComponent(item.id)}`, { method: "DELETE" });
       const data = await response.json() as { error?: string }; if (!response.ok) throw new Error(data.error ?? "Não foi possível eliminar.");
       await loadInvitations(); setMessage("Convite eliminado."); } catch (error) { setMessage(error instanceof Error ? error.message : "Não foi possível eliminar."); } finally { setBusy(false); } }
-  async function copyLink(code: string) { await navigator.clipboard.writeText(`${window.location.origin}/?convite=${code}`); setCopiedCode(code); window.setTimeout(() => setCopiedCode(null), 1800); }
+  async function copyLink(code: string) { await navigator.clipboard.writeText(`${window.location.origin}${personalizedInvitationPath(code)}`); setCopiedCode(code); window.setTimeout(() => setCopiedCode(null), 1800); }
   function sendReminder(item: Invitation) { const number = whatsappNumber(item.phone); if (!number) { setMessage("Registe um telefone válido para enviar o lembrete por WhatsApp."); return; }
-    const link = `${window.location.origin}/?convite=${item.code}#confirmacao`; const names = item.invitees.map((person) => person.fullName).join(" e ");
+    const link = `${window.location.origin}${personalizedInvitationPath(item.code)}#confirmacao`; const names = item.invitees.map((person) => person.fullName).join(" e ");
     const text = [`Olá, ${names}! 🤍`, "Estamos a preparar o nosso grande dia e gostaríamos de contar com a vossa resposta.",
       `Confirmem a presença até ${WEDDING.rsvpDeadlineLabel} através do vosso convite personalizado:`, link, "Com carinho, Anastácia & Bina 💍"].join("\n\n");
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer"); }
