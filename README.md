@@ -1,6 +1,6 @@
 # Convite de Casamento — Bina & Anastácia 💍
 
-Website responsivo e elegante para convite de casamento, desenvolvido com as tecnologias mais modernas. Apresenta uma experiência visual refinada, confirmação de presença integrada e gestão completa de convidados.
+Convite digital responsivo para o casamento de Anastácia e Bina, com confirmação de presença, convites personalizados, lista de presentes e gestão dos convidados.
 
 ## ✨ Funcionalidades Principais
 
@@ -9,42 +9,39 @@ Website responsivo e elegante para convite de casamento, desenvolvido com as tec
 - 🎁 **Galeria de presentes** com formas de contribuição
 - 📍 **Localização e detalhes** da cerimónia e almoço
 - 🎵 **Música de fundo** opcional e personalizável
-- 💾 **Gestão persistente** de convites com Cloudflare D1
-- 🔗 **Links personalizados** para convidados específicos (nomes únicos)
-- 🔐 **Painel admin** protegido com controlo de estado (pendente, confirmado, não comparece)
+- 💾 **Gestão persistente** de convites e reservas com Cloudflare D1
+- 🔗 **Links personalizados** no formato `?convite=...`
+- 🎟️ **Passe digital** com QR Code para identificação na receção
+- 🔐 **Painel admin** com gestão, filtros, exportação CSV e check-in
 - 📱 **Design responsivo** otimizado para mobile, tablet e desktop
 - 💌 **Mensagens aleatórias** personalizadas e emocionantes
 
 ## 🛠️ Tech Stack
 
 | Tecnologia | Versão | Propósito |
-|----------|--------|---------|
-| **Next.js** | 16.2.6 | Framework React com SSR |
+| --- | --- | --- |
+| **Next.js** | 16.2.6 | Framework React |
 | **React** | 19.2.6 | UI e componentes |
 | **TypeScript** | Latest | Type safety |
 | **Vite** | Latest | Build rápido e dev server |
 | **Tailwind CSS** | 4.x | Estilo e design system |
 | **Drizzle ORM** | 0.45.2 | ORM para D1 |
 | **Cloudflare D1** | - | Banco de dados SQLite serverless |
-| **Cloudflare Workers** | - | Serverless compute |
+| **Cloudflare Workers** | - | Execução serverless |
 | **shadcn-style UI** | - | Componentes acessíveis |
 
 ## 📋 Requisitos
 
 - **Node.js**: 22.13 ou superior
-- **npm**: 9.x ou superior
+- **npm**: incluído com Node.js
 - **Cloudflare Account**: Com acesso a Workers e D1
-- **Git**: Para versionamento
+- **Bash e GNU `timeout`**: necessários para o build validado
 
 ## 🚀 Começar
 
 ### 1. Instalação
 
 ```bash
-# Clonar repositório
-git clone <repository-url>
-cd convite-casamento
-
 # Instalar dependências
 npm install
 
@@ -58,7 +55,7 @@ npm run install:ci
 npm run dev
 ```
 
-A aplicação fica disponível em **http://localhost:5173**
+A aplicação fica disponível em <http://localhost:5173>.
 
 ### 3. Build para Produção
 
@@ -66,7 +63,7 @@ A aplicação fica disponível em **http://localhost:5173**
 npm run build
 ```
 
-Gera output otimizado em `dist/`
+Gera a aplicação otimizada para publicação em `dist/`.
 
 ### 4. Deploy no Cloudflare
 
@@ -78,17 +75,18 @@ Aplica migrações D1 e faz deploy dos Workers
 
 ## 📁 Estrutura do Projeto
 
-```
+```text
 app/
 ├── page.tsx                 # Página principal do convite
 ├── presentes/page.tsx       # Página de presentes
 ├── admin/page.tsx           # Painel admin (protegido)
+├── admin/check-in/page.tsx  # Check-in dos convidados
 └── api/
-    ├── admin/
-    │   ├── invitations/route.ts   # API de convites
-    │   ├── login/route.ts         # Autenticação
-    │   └── logout/route.ts        # Logout
-    └── rsvp/route.ts        # API de RSVP
+  ├── admin/               # APIs de gestão e check-in
+  ├── gifts/               # API de presentes
+  └── rsvp/                # API de confirmações
+
+app/evento.ics/route.ts      # Ficheiro de calendário do evento
 
 components/
 ├── rsvp-form.tsx            # Formulário de confirmação
@@ -111,52 +109,39 @@ scripts/
 
 public/                       # Arquivos estáticos
 tests/                        # Testes automatizados
+drizzle/                      # Migrações SQL do D1
 ```
 
 ## ⚙️ Configuração
 
 ### Dados do Evento
 
-Os dados principais estão em [app/page.tsx](app/page.tsx):
+Os dados principais do evento estão em [lib/wedding.ts](lib/wedding.ts):
 
 ```typescript
-const invitation = {
-  noivos: { nome1: "...", nome2: "..." },
-  data: "...",
-  hora: "...",
-  local: {
-    cerimonia: "...",
-    almoco: "..."
-  },
-  whatsapp: "+55...",
-  googleMaps: "..."
+export const WEDDING = {
+  couple: "Anastácia & Bina",
+  ceremonyDateLabel: "19 de dezembro de 2026",
+  rsvpDeadlineLabel: "30 de novembro de 2026",
+  // horários, locais e links de mapas também ficam neste objeto
 };
 ```
 
 **Campos a personalizar:**
+
 - ✏️ Nomes dos noivos
 - 📅 Data, hora e local do evento
 - 👨‍👩‍👧‍👦 Família e relação com convidados
 - 📱 Número WhatsApp para confirmações
 - 🗺️ Link Google Maps do local
 
-### Variáveis de Ambiente
+### Senha administrativa
 
-Crie um arquivo `.env.local` na raiz:
+Configure o segredo `ADMIN_PASSWORD` no ambiente do Cloudflare. Ele protege o
+painel `/admin` e não deve ser guardado no repositório:
 
-```env
-# Cloudflare
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_API_TOKEN=...
-
-# D1
-D1_DATABASE_ID=casamento-bina-anastacia-db
-
-# Autenticação Admin
-ADMIN_PASSWORD=seu_password_seguro
-
-# Opcional
-ENABLE_MUSIC=true
+```bash
+wrangler secret put ADMIN_PASSWORD
 ```
 
 ## 💾 Base de Dados
@@ -166,7 +151,6 @@ ENABLE_MUSIC=true
 O projeto usa **Cloudflare D1** (SQLite serverless):
 
 - **Binding**: `DB`
-- **Database**: `casamento-bina-anastacia-db`
 - **ORM**: Drizzle
 
 ### Schema de Convidados
@@ -190,11 +174,8 @@ export const guests = sqliteTable("guests", {
 # Gerar nova migração
 npm run db:generate
 
-# Aplicar migrações localmente
-wrangler d1 migrations list
-
 # Aplicar remotamente
-wrangler d1 migrations apply casamento-bina-anastacia-db --remote
+wrangler d1 migrations apply <nome-do-banco> --remote
 ```
 
 ## 🔐 Painel Admin
@@ -208,6 +189,9 @@ Acesso protegido em `/admin`:
 - Estatísticas em tempo real
 
 **Autenticação**: Password configurável em variáveis de ambiente
+
+O fluxo de check-in está disponível em `/admin/check-in` e aceita o código ou
+o link do convite. Cada convite pode conter uma ou duas pessoas.
 
 ## 🧪 Testes
 
@@ -242,14 +226,14 @@ npm run deploy:cloudflare
 ### Verificações Pre-Deploy
 
 - Build validado (`build-verified.sh`)
-- Variáveis de ambiente configuradas
-- D1 migrations aplicadas
-- RBAC e permissões Cloudflare
+- Segredo `ADMIN_PASSWORD` configurado
+- Binding D1 `DB` disponível
+- Migrações D1 necessárias presentes no repositório
 
 ## 📦 Componentes Principais
 
 | Componente | Localização | Descrição |
-|-----------|-----------|-----------|
+| --- | --- | --- |
 | **RSVP Form** | [components/rsvp-form.tsx](components/rsvp-form.tsx) | Formulário de confirmação com validação |
 | **Guest Admin** | [components/guest-admin.tsx](components/guest-admin.tsx) | Painel de gestão de convidados |
 | **Love Message** | [components/random-love-message.tsx](components/random-love-message.tsx) | Mensagens aleatórias personalizadas |
@@ -258,21 +242,15 @@ npm run deploy:cloudflare
 
 ## 🎨 Customização Visual
 
-### Temas
-
-Suporte a temas via `next-themes`:
-
-```bash
-npm run dev -- --theme=dark
-```
-
 ### Cores e Tipografia
 
-Tailwind CSS com configuração em `tailwind.config.ts`
+Os estilos principais estão em [app/globals.css](app/globals.css), com Tailwind
+CSS 4 e tokens visuais definidos no próprio arquivo.
 
 ### Responsividade
 
 Breakpoints padrão Tailwind:
+
 - `sm`: 640px
 - `md`: 768px
 - `lg`: 1024px
@@ -282,20 +260,20 @@ Breakpoints padrão Tailwind:
 ## 🐛 Troubleshooting
 
 ### "Cannot find module 'wrangler'"
+
 ```bash
-npm install -g @cloudflare/wrangler
+npm install
 ```
 
 ### D1 connection failed
-```bash
-# Verificar configuração
-cat wrangler.toml
 
+```bash
 # Testar ligação
-wrangler d1 execute casamento-bina-anastacia-db --command "SELECT 1"
+wrangler d1 execute <nome-do-banco> --remote --command "SELECT 1"
 ```
 
 ### Build fails
+
 ```bash
 # Limpar cache
 rm -rf .next dist node_modules/.cache
@@ -314,20 +292,7 @@ npm run build
 
 Projeto privado para evento pessoal.
 
-## 💬 Suporte
-
-Para dúvidas ou problemas, contacte os desenvolvedores ou crie uma issue no repositório.
-
----
-
-**Última atualização**: 2026-01-09
-
-O comando de deploy aplica primeiro as migrações pendentes ao D1 e só depois
-publica o Worker. Configure também um segredo de execução chamado
-`ADMIN_PASSWORD`; ele protege o painel `/admin` e não deve ser guardado no
-repositório.
-
-## Personalização final antes de partilhar
+## Personalização antes de partilhar
 
 Antes de enviar o convite para os convidados, recomenda-se confirmar:
 
@@ -338,17 +303,15 @@ Antes de enviar o convite para os convidados, recomenda-se confirmar:
 - lista de presentes e valores/contribuições;
 - texto final da mensagem principal do convite.
 
-## Observações
+Antes de enviar os links aos convidados, valide também o fluxo completo de
+RSVP, consulta de presentes e check-in num ambiente com D1 configurado.
 
-- O formulário de confirmação está preparado para integração com WhatsApp e base de dados do projecto.
-- O tema visual foi desenhado para ser elegante, discreto e adequado a um convite de casamento.
-- Para alterações visuais mais profundas, os estilos principais encontram-se em [app/globals.css](app/globals.css).
-
-## Comandos úteis
+## Comandos rápidos
 
 ```bash
 npm run dev
 npm run build
 npm run lint
 npm run db:generate
+npm run test
 ```
