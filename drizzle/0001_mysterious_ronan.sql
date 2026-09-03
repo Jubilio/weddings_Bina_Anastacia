@@ -1,4 +1,4 @@
-CREATE TABLE `invitations` (
+CREATE TABLE IF NOT EXISTS `invitations` (
 	`id` text PRIMARY KEY NOT NULL,
 	`code` text NOT NULL,
 	`primary_name` text NOT NULL,
@@ -9,8 +9,8 @@ CREATE TABLE `invitations` (
 	`updated_at` integer DEFAULT (unixepoch()) NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `invitations_code_unique` ON `invitations` (`code`);--> statement-breakpoint
-CREATE TABLE `invitees` (
+CREATE UNIQUE INDEX IF NOT EXISTS `invitations_code_unique` ON `invitations` (`code`);--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS `invitees` (
 	`id` text PRIMARY KEY NOT NULL,
 	`invitation_id` text NOT NULL,
 	`full_name` text NOT NULL,
