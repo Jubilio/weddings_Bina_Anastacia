@@ -17,6 +17,10 @@ import { MusicPlayer } from "@/components/music-player";
 import { InvitationPass } from "@/components/invitation-pass";
 import { SplashScreen, WeddingCountdown } from "@/components/wedding-experience";
 import { getInvitationByCode } from "@/lib/invitations";
+import {
+  invitationSocialMetadata,
+  personalizedInvitationPath,
+} from "@/lib/social-preview";
 import { rsvpIsOpen, WEDDING } from "@/lib/wedding";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +48,14 @@ type Props = { searchParams: Promise<{ convite?: string | string[] }> };
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
   const code = Array.isArray(params.convite) ? params.convite[0] : params.convite;
-  return { robots: code ? { index: false, follow: false, noarchive: true } : undefined };
+  return {
+    ...invitationSocialMetadata(
+      code ? personalizedInvitationPath(code) : undefined,
+    ),
+    robots: code
+      ? { index: false, follow: false, noarchive: true }
+      : undefined,
+  };
 }
 
 
