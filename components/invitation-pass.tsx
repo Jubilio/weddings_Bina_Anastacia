@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { CalendarDays, CheckCircle2, Download, Printer, TicketCheck, XCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { formatInvitationCode } from "@/lib/invitation-code";
 import type { Invitation } from "@/lib/invitation-types";
+import { toast } from "sonner";
 
 function centeredText(context: CanvasRenderingContext2D, text: string, y: number, font: string, color: string) {
   context.font = font; context.fillStyle = color; context.textAlign = "center"; context.fillText(text, 540, y);
@@ -13,14 +14,13 @@ function centeredText(context: CanvasRenderingContext2D, text: string, y: number
 function subscribeToOrigin() { return () => undefined; }
 
 export function InvitationPass({ invitation }: { invitation: Invitation }) {
-  const [downloadMessage, setDownloadMessage] = useState("");
   const origin = useSyncExternalStore(subscribeToOrigin, () => window.location.origin, () => "");
   const passUrl = origin ? `${origin}/?convite=${invitation.code}` : "";
   const attendingCount = invitation.invitees.filter((person) => person.attendance === "sim").length;
 
   async function downloadPass() {
     const qr = document.getElementById(`pass-qr-${invitation.code}`);
-    if (!(qr instanceof SVGSVGElement)) { setDownloadMessage("Não foi possível preparar o passe. Tente novamente."); return; }
+    if (!(qr instanceof SVGSVGElement)) { toast.error("Não foi possível preparar o passe", { description: "Tente novamente dentro de alguns instantes." }); return; }
     try {
       const canvas = document.createElement("canvas"); canvas.width = 1080; canvas.height = 1350;
       const context = canvas.getContext("2d"); if (!context) throw new Error("Canvas indisponível");
@@ -46,8 +46,8 @@ export function InvitationPass({ invitation }: { invitation: Invitation }) {
       if (!blob) throw new Error("Passe indisponível");
       const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url;
       anchor.download = `passe-${invitation.primaryName.toLowerCase().replace(/[^a-z0-9]+/gi, "-")}.png`;
-      anchor.click(); URL.revokeObjectURL(url); setDownloadMessage("Passe guardado no dispositivo.");
-    } catch { setDownloadMessage("Não foi possível guardar o passe. Use a opção de imprimir."); }
+      anchor.click(); URL.revokeObjectURL(url); toast.success("Passe guardado", { description: "O ficheiro foi transferido para o seu dispositivo." });
+    } catch { toast.error("Não foi possível guardar o passe", { description: "Utilize a opção Imprimir / PDF." }); }
   }
 
   return <article className="invitation-pass" aria-labelledby="invitation-pass-title">
@@ -69,7 +69,6 @@ export function InvitationPass({ invitation }: { invitation: Invitation }) {
     <div className="pass-actions"><Button type="button" onClick={downloadPass}><Download aria-hidden="true" /> Guardar passe</Button>
       <Button type="button" variant="outline" onClick={() => window.print()}><Printer aria-hidden="true" /> Imprimir / PDF</Button>
       <Button asChild variant="outline"><a href="/evento.ics"><CalendarDays aria-hidden="true" /> Calendário</a></Button></div>
-    {downloadMessage ? <p className="pass-download-message" role="status">{downloadMessage}</p> : null}
     <p className="pass-note">Este código identifica as pessoas indicadas acima na entrada do salão.</p>
   </article>;
 }

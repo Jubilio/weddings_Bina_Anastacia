@@ -1410,11 +1410,24 @@ a {
 }
 
 .form-error {
-  min-height: 18px;
-  margin: -7px 0 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  margin: -2px 0 14px;
+  padding: 11px 13px;
+  border: 1px solid rgba(154, 63, 56, 0.22);
+  background: rgba(154, 63, 56, 0.06);
   color: #9a3f38;
   font-size: 12px;
+  line-height: 1.5;
   text-align: center;
+}
+
+.form-error svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
 }
 
 .rsvp-submit {
@@ -2142,7 +2155,7 @@ a {
 .gifts-page-section { min-height: 100vh; }
 .gifts-back-link { margin: 0 auto 34px; }
 .gifts-page-section .section-heading h1 { margin: 10px 0 14px; color: var(--sage-deep); font: 400 clamp(36px,8vw,54px)/1.1 Georgia,serif; }
-.gift-personalized-note,.gift-registry-message { width: min(100%,720px); margin: 0 auto 22px; padding: 14px 18px; border: 1px solid rgba(182,150,88,.28); background: rgba(182,150,88,.08); color: var(--sage-deep); font-size: 13px; line-height: 1.55; text-align: center; }
+.gift-personalized-note { width: min(100%,720px); margin: 0 auto 22px; padding: 14px 18px; border: 1px solid rgba(182,150,88,.28); background: rgba(182,150,88,.08); color: var(--sage-deep); font-size: 13px; line-height: 1.55; text-align: center; }
 .gift-registry { width: min(100%,760px); margin: 34px auto 0; }
 .gift-registry-intro { display: flex; gap: 14px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .gift-registry-intro>svg { width: 25px; flex: 0 0 auto; color: var(--gold); }
@@ -2169,7 +2182,6 @@ a {
 .pass-checkin-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 13px; padding: 6px 10px; border-radius: 999px; background: #dce8d8; color: #385235; font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .pass-checkin-badge svg { width: 14px; }
 .pass-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 8px 24px 18px; }
-.pass-download-message { margin: 0; padding: 0 24px 14px; color: var(--sage-deep); font-size: 11px; text-align: center; }
 .admin-header-actions,.guest-card-footer { display: flex; flex-wrap: wrap; gap: 8px; }
 .admin-list-title>div { flex: 1; }
 .admin-list-tools { display: grid; gap: 10px; }
@@ -2201,7 +2213,7 @@ a {
 .checkin-scanner video { width: 100%; height: 100%; object-fit: cover; }
 .checkin-scanner>div { position: absolute; inset: 20%; display: grid; place-items: center; border: 2px solid rgba(255,253,248,.9); color: rgba(255,253,248,.8); }
 .checkin-scanner svg { width: 48px; height: 48px; }
-.checkin-message { margin: 18px 0 0; color: var(--sage-deep); font-size: 13px; text-align: center; }
+.checkin-message { margin: 18px 0 0; padding: 12px 14px; border: 1px solid rgba(182,150,88,.28); background: rgba(182,150,88,.08); color: var(--sage-deep); font-size: 13px; line-height: 1.55; text-align: center; }
 .checkin-result { margin-top: 16px; padding: 28px; box-shadow: 0 20px 60px rgba(55,63,50,.12); }
 .checkin-result.is-checked-in { border-color: rgba(56,82,53,.46); background: #f5faf2; }
 .checkin-result-heading { display: flex; align-items: center; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
@@ -2221,4 +2233,160 @@ a {
 @media (min-width:720px) { .admin-stats { grid-template-columns:repeat(3,1fr); } }
 @media (min-width:1100px) { .admin-stats { grid-template-columns:repeat(6,1fr); } }
 @media (max-width:560px) { .admin-header-actions,.admin-header-actions>*,.checkin-header>a,.pass-actions>* { width:100%; } .checkin-header { flex-direction:column; } .checkin-lookup>div { grid-template-columns:1fr; } .checkin-page { padding:12px; } .checkin-header,.checkin-panel,.checkin-result { padding:20px; } }
-@media print { body * { visibility:hidden!important; } .invitation-pass,.invitation-pass * { visibility:visible!important; } .invitation-pass { position:absolute; inset:0 auto auto 0; width:100%; box-shadow:none; } .pass-actions,.pass-download-message,.pass-note { display:none!important; } }
+@media print { body * { visibility:hidden!important; } .invitation-pass,.invitation-pass * { visibility:visible!important; } .invitation-pass { position:absolute; inset:0 auto auto 0; width:100%; box-shadow:none; } .pass-actions,.pass-note { display:none!important; } }
+
+/* Elegant notices and confirmations — styled as part of the invitation stationery. */
+[data-slot="alert-dialog-overlay"] {
+  background: rgba(34, 40, 32, 0.62);
+  backdrop-filter: blur(6px);
+}
+
+.wedding-alert-dialog {
+  width: min(92vw, 500px);
+  gap: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(182, 150, 88, 0.55);
+  border-radius: 2px;
+  background:
+    linear-gradient(rgba(255, 253, 248, 0.96), rgba(255, 253, 248, 0.98)),
+    radial-gradient(circle at top right, rgba(182, 150, 88, 0.18), transparent 42%);
+  padding: 30px;
+  box-shadow: 0 30px 90px rgba(34, 40, 32, 0.28);
+}
+
+.wedding-alert-dialog::before {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(182, 150, 88, 0.22);
+  content: "";
+  pointer-events: none;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-header"] {
+  position: relative;
+  z-index: 1;
+  gap: 8px;
+}
+
+.wedding-alert-dialog-icon {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 5px;
+  border: 1px solid rgba(182, 150, 88, 0.42);
+  border-radius: 50%;
+  background: rgba(182, 150, 88, 0.1);
+  color: #8d4c42;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-title"] {
+  color: var(--sage-deep);
+  font: 500 clamp(24px, 5vw, 31px)/1.2 Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-description"] {
+  max-width: 410px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-description"] strong {
+  color: var(--sage-deep);
+  font-weight: 700;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-footer"] {
+  position: relative;
+  z-index: 1;
+  padding-top: 4px;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-cancel"],
+.wedding-alert-dialog [data-slot="alert-dialog-action"] {
+  min-height: 42px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-action"] {
+  background: #82483f;
+  color: #fffdf8;
+}
+
+.wedding-alert-dialog [data-slot="alert-dialog-action"]:hover {
+  background: #713d35;
+}
+
+.wedding-toaster[data-sonner-toaster] {
+  --width: min(390px, calc(100vw - 28px));
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.wedding-toaster [data-sonner-toast] {
+  min-height: 70px;
+  border: 1px solid rgba(182, 150, 88, 0.48) !important;
+  border-radius: 2px !important;
+  background: rgba(255, 253, 248, 0.98) !important;
+  color: var(--ink) !important;
+  padding: 15px 44px 15px 16px !important;
+  box-shadow: 0 20px 55px rgba(39, 47, 36, 0.2) !important;
+  backdrop-filter: blur(14px);
+}
+
+.wedding-toaster [data-sonner-toast]::after {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(182, 150, 88, 0.15);
+  content: "";
+  pointer-events: none;
+}
+
+.wedding-toaster [data-sonner-toast][data-type="success"] {
+  border-left: 3px solid var(--sage) !important;
+}
+
+.wedding-toaster [data-sonner-toast][data-type="error"],
+.wedding-toaster [data-sonner-toast][data-type="warning"] {
+  border-left: 3px solid #9a574b !important;
+}
+
+.wedding-toaster [data-icon] {
+  color: var(--gold) !important;
+}
+
+.wedding-toaster [data-title] {
+  color: var(--sage-deep) !important;
+  font: 600 16px/1.25 Georgia, "Times New Roman", serif !important;
+}
+
+.wedding-toaster [data-description] {
+  color: var(--muted) !important;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+}
+
+.wedding-toaster [data-close-button] {
+  top: 50% !important;
+  right: 12px !important;
+  left: auto !important;
+  width: 25px !important;
+  height: 25px !important;
+  transform: translateY(-50%) !important;
+  border-color: rgba(182, 150, 88, 0.38) !important;
+  background: var(--paper) !important;
+  color: var(--sage-deep) !important;
+}
+
+@media (max-width: 560px) {
+  .wedding-alert-dialog {
+    padding: 26px 22px 22px;
+  }
+
+  .wedding-alert-dialog [data-slot="alert-dialog-footer"] {
+    gap: 8px;
+  }
+}

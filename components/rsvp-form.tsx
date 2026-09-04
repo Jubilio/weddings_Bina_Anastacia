@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { CheckCircle2, Send } from "lucide-react";
+import { CircleAlert, CheckCircle2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -168,9 +168,9 @@ export function RsvpForm({
         />
       </div>
 
-      <p className="form-error" role="alert" aria-live="polite">
-        {error}
-      </p>
+      {error ? <p className="form-error" role="alert" aria-live="polite">
+        <CircleAlert aria-hidden="true" /> {error}
+      </p> : null}
 
       <Button
         type="submit"
