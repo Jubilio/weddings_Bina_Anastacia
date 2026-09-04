@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatInvitationCode, normalizeInvitationCode } from "@/lib/invitation-code";
 import type { Invitation } from "@/lib/invitation-types";
+import { toast } from "sonner";
 
 type BarcodeDetectorLike = { detect(source: HTMLVideoElement): Promise<Array<{ rawValue: string }>> };
 type BarcodeDetectorConstructor = new (options?: { formats?: string[] }) => BarcodeDetectorLike;
@@ -43,7 +44,8 @@ export function CheckInDashboard() {
     const data = await response.json() as { invitation?: Invitation; error?: string };
     if (!response.ok || !data.invitation) throw new Error(data.error ?? "Não foi possível registar a entrada.");
     setInvitation(data.invitation); setMessage(checkedIn ? "Entrada registada com sucesso." : "Check-in removido.");
-  } catch (error) { setMessage(error instanceof Error ? error.message : "Não foi possível registar a entrada."); } finally { setBusy(false); } }
+    toast.success(checkedIn ? "Entrada registada" : "Check-in removido", { description: checkedIn ? "O convite foi validado com sucesso." : "O convite pode voltar a ser validado." });
+  } catch (error) { const description = error instanceof Error ? error.message : "Não foi possível registar a entrada."; setMessage(description); toast.error("Não foi possível atualizar o check-in", { description }); } finally { setBusy(false); } }
   async function startCamera() {
     setMessage(""); const Detector = (window as Window & { BarcodeDetector?: BarcodeDetectorConstructor }).BarcodeDetector;
     if (!Detector || !navigator.mediaDevices?.getUserMedia) { setMessage("A leitura automática não está disponível neste navegador. Introduza o código manualmente."); return; }

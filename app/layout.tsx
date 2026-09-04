@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { invitationSocialMetadata } from "@/lib/social-preview";
 import "./globals.css";
 
@@ -11,7 +12,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-MZ">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Toaster
+          className="toaster group wedding-toaster"
+          theme="light"
+          position="top-center"
+          closeButton
+          visibleToasts={3}
+          toastOptions={{ duration: 4200 }}
+        />
+      </body>
     </html>
   );
 }

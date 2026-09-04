@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Check, Copy, Gift, LockKeyhole, ShoppingBag, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GiftReservationStatus, GiftReservationView } from "@/lib/gifts";
+import { toast } from "sonner";
 
 type GiftItem = { key: string; name: string };
 type GiftAction = "reservar" | "comprado" | "libertar";
@@ -13,22 +14,23 @@ export function GiftRegistry({ gifts, initialReservations, invitationCode }: {
 }) {
   const [reservations, setReservations] = useState(initialReservations);
   const [busyKey, setBusyKey] = useState<string | null>(null);
-  const [message, setMessage] = useState("");
   const reservationByGift = useMemo(() => new Map(reservations.map((item) => [item.giftKey, item])), [reservations]);
 
   async function updateGift(giftKey: string, action: GiftAction) {
     if (!invitationCode) return;
-    setBusyKey(giftKey); setMessage("");
+    setBusyKey(giftKey);
     try {
       const response = await fetch("/api/gifts", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: invitationCode, giftKey, action }) });
       const data = await response.json() as { reservations?: GiftReservationView[]; error?: string };
       if (!response.ok || !data.reservations) throw new Error(data.error ?? "Não foi possível atualizar o presente.");
       setReservations(data.reservations);
-      setMessage(action === "reservar" ? "Presente reservado com sucesso." : action === "comprado" ?
-        "Presente marcado como comprado. Muito obrigado!" : "A reserva foi libertada.");
+      toast.success(action === "reservar" ? "Presente reservado" : action === "comprado" ? "Presente confirmado" : "Reserva libertada", {
+        description: action === "reservar" ? "A opção ficou guardada em seu nome." : action === "comprado" ?
+          "Muito obrigado por fazer parte deste momento." : "O presente voltou a ficar disponível.",
+      });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Não foi possível atualizar o presente.");
+      toast.error("Não foi possível atualizar o presente", { description: error instanceof Error ? error.message : "Tente novamente." });
     } finally { setBusyKey(null); }
   }
 
@@ -38,7 +40,6 @@ export function GiftRegistry({ gifts, initialReservations, invitationCode }: {
       <p>{invitationCode ? "Reserve uma opção para evitar presentes repetidos. Apenas o casal saberá quem fez a reserva." :
         "Abra esta lista através do seu link personalizado para reservar um presente."}</p>
     </div></div>
-    {message ? <p className="gift-registry-message" role="status">{message}</p> : null}
     <ol className="gift-registry-list">{gifts.map((gift, index) => {
       const reservation = reservationByGift.get(gift.key); const busy = busyKey === gift.key;
       return <li key={gift.key} className={`gift-registry-item ${reservation ? `is-${reservation.status}` : "is-available"}`}>
@@ -68,8 +69,8 @@ function giftStatus(status?: GiftReservationStatus, isMine?: boolean) {
 export function ContributionCopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
-    try { await navigator.clipboard.writeText(value); setCopied(true); window.setTimeout(() => setCopied(false), 1800); }
-    catch { setCopied(false); }
+    try { await navigator.clipboard.writeText(value); setCopied(true); toast.success("Dados copiados", { description: "A informação está pronta para utilizar." }); window.setTimeout(() => setCopied(false), 1800); }
+    catch { setCopied(false); toast.error("Não foi possível copiar", { description: "Selecione e copie os dados manualmente." }); }
   }
   return <Button type="button" size="sm" variant="outline" onClick={copy}>
     {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}{copied ? "Copiado" : "Copiar"}
