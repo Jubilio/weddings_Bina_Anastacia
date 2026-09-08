@@ -22,6 +22,7 @@ import { formatInvitationCode } from "@/lib/invitation-code";
 import type { Invitation } from "@/lib/invitation-types";
 import type { AdminGiftReservationView } from "@/lib/gifts";
 import { personalizedInvitationPath } from "@/lib/social-preview";
+import { invitationWhatsAppMessage } from "@/lib/invitation-whatsapp";
 import { WEDDING } from "@/lib/wedding";
 import { toast } from "sonner";
 
@@ -112,6 +113,12 @@ export function GuestAdmin() {
   async function copyLink(code: string) { try { await navigator.clipboard.writeText(`${window.location.origin}${personalizedInvitationPath(code)}`); setCopiedCode(code);
       toast.success("Link copiado", { description: "O convite personalizado está pronto para ser partilhado." }); window.setTimeout(() => setCopiedCode(null), 1800);
     } catch { toast.error("Não foi possível copiar", { description: "Copie o endereço diretamente da barra do navegador." }); } }
+  function sendInvitation(item: Invitation) {
+    const number = whatsappNumber(item.phone);
+    const link = `${window.location.origin}${personalizedInvitationPath(item.code)}`;
+    const text = invitationWhatsAppMessage(item, link);
+    window.open(`https://wa.me/${number ?? ""}?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+  }
   function sendReminder(item: Invitation) { const number = whatsappNumber(item.phone); if (!number) { toast.warning("Telefone em falta", { description: "Registe um número válido para enviar o lembrete por WhatsApp." }); return; }
     const link = `${window.location.origin}${personalizedInvitationPath(item.code)}#confirmacao`; const names = item.invitees.map((person) => person.fullName).join(" e ");
     const text = [`Olá, ${names}! 🤍`, "Estamos a preparar o nosso grande dia e gostaríamos de contar com a vossa resposta.",
@@ -140,7 +147,7 @@ export function GuestAdmin() {
     <section className="admin-grid"><form className="guest-editor" onSubmit={save}><div className="admin-section-title"><UserPlus aria-hidden="true" /><div><p>{editingId ? "Editar convite" : "Novo convite"}</p><span>Indique uma ou duas pessoas para criar o link personalizado.</span></div></div>
       <div className="form-field"><Label htmlFor="primary-name">Primeira pessoa convidada</Label><Input id="primary-name" value={draft.primaryName} onChange={(e) => setDraft((d) => ({ ...d, primaryName: e.target.value }))} placeholder="Nome completo" maxLength={120} required /></div>
       <div className="form-field"><Label htmlFor="second-name">Segunda pessoa convidada (opcional)</Label><Input id="second-name" value={draft.companions[0] ?? ""} onChange={(e) => setDraft((d) => ({ ...d, companions: [e.target.value] }))} placeholder="Nome completo" maxLength={120} /></div>
-      <div className="form-field"><Label htmlFor="guest-phone">Telefone para lembrete (opcional)</Label><Input id="guest-phone" value={draft.phone} onChange={(e) => setDraft((d) => ({ ...d, phone: e.target.value }))} placeholder="84 000 0000" inputMode="tel" /></div>
+      <div className="form-field"><Label htmlFor="guest-phone">Telefone para WhatsApp (opcional)</Label><Input id="guest-phone" value={draft.phone} onChange={(e) => setDraft((d) => ({ ...d, phone: e.target.value }))} placeholder="84 000 0000" inputMode="tel" /></div>
       <div className="editor-actions"><Button type="submit" disabled={busy}><Save aria-hidden="true" />{busy ? "A guardar…" : editingId ? "Guardar alterações" : "Criar convite"}</Button>{editingId ? <Button type="button" variant="outline" onClick={resetDraft}>Cancelar</Button> : null}</div>
     </form><section className="guest-list" aria-labelledby="guest-list-title"><div className="admin-section-title admin-list-title"><Users aria-hidden="true" /><div><p id="guest-list-title">Convites registados</p><span>{invitations.length ? "Pesquise, filtre ou envie o link ao convidado." : "Ainda não há convidados."}</span></div><Button type="button" variant="outline" onClick={exportCsv} disabled={!invitations.length}><Download aria-hidden="true" /> Exportar CSV</Button></div>
       <div className="admin-list-tools"><div className="guest-search"><Search aria-hidden="true" /><Input type="search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Pesquisar nome, telefone ou código" aria-label="Pesquisar convidado, telefone ou código" /></div>
@@ -148,6 +155,7 @@ export function GuestAdmin() {
       {filteredInvitations.map((item) => <article className="guest-card" key={item.id}><div className="guest-card-heading"><div><h2>{item.primaryName}</h2><p>Convite para {item.invitees.length} {item.invitees.length === 1 ? "pessoa" : "pessoas"}</p><code>{formatInvitationCode(item.code)}</code></div><div className="guest-card-actions"><Button type="button" size="icon" variant="outline" aria-label="Editar convite" onClick={() => beginEdit(item)}><Pencil aria-hidden="true" /></Button><AlertDialog><AlertDialogTrigger asChild><Button type="button" size="icon" variant="outline" aria-label={`Eliminar convite de ${item.primaryName}`}><Trash2 aria-hidden="true" /></Button></AlertDialogTrigger><AlertDialogContent className="wedding-alert-dialog"><AlertDialogHeader><AlertDialogMedia className="wedding-alert-dialog-icon"><Trash2 aria-hidden="true" /></AlertDialogMedia><AlertDialogTitle>Eliminar este convite?</AlertDialogTitle><AlertDialogDescription>O convite de <strong>{item.primaryName}</strong> e todas as respostas associadas serão removidos. Esta ação não pode ser desfeita.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Manter convite</AlertDialogCancel><AlertDialogAction variant="destructive" disabled={busy} onClick={() => remove(item)}>{busy ? "A eliminar…" : "Sim, eliminar"}</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog></div></div>
         <ul className="invitee-status-list">{item.invitees.map((person) => <li key={person.id}><span>{person.fullName}</span><small className={`status-${person.attendance}`}>{person.attendance === "sim" ? "Confirmado" : person.attendance === "nao" ? "Não comparece" : "Pendente"}</small></li>)}</ul>
         {item.checkedInAt ? <p className="guest-checkin-status"><Check aria-hidden="true" /> Check-in em {dateLabel(item.checkedInAt)}</p> : null}<div className="guest-card-footer"><Button type="button" className="copy-link" onClick={() => copyLink(item.code)}>{copiedCode === item.code ? <><Check aria-hidden="true" /> Link copiado</> : <><Clipboard aria-hidden="true" /> Copiar link</>}</Button>
+          <Button type="button" variant="outline" aria-label={`Enviar convite de ${item.invitees.map((person) => person.fullName).join(" e ")} por WhatsApp`} onClick={() => sendInvitation(item)}><MessageCircle aria-hidden="true" /> Enviar por WhatsApp</Button>
           {item.invitees.some((p) => p.attendance === "pendente") && item.phone ? <Button type="button" variant="outline" onClick={() => sendReminder(item)}><MessageCircle aria-hidden="true" /> Lembrar</Button> : null}</div>
       </article>)}{(searchTerm || statusFilter !== "todos") && !filteredInvitations.length ? <p className="admin-empty-search">Nenhum convite corresponde aos filtros.</p> : null}
     </section></section>
