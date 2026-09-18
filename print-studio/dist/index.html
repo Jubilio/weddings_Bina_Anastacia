@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-MZ">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+<title>Atelier de convites · Anastácia & Bina</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./" aria-label="Atelier de convites, início"><span class="monogram">A<span>&</span>B</span><span>Anastácia & Bina<small>19 de dezembro de 2026</small></span></a><span class="top-note">Papel, carinho e uma memória para guardar.</span></header>
+<main>
+<section class="intro"><p class="eyebrow">A NOSSA PAPELARIA</p><h1>Um convite para guardar.</h1><p>Personalize os nomes, escolha os cartões e leve o nosso dia até às mãos de quem mais importa.</p></section>
+<div class="workspace">
+<form id="editor" class="editor" autocomplete="off">
+<div class="section-heading"><span>01</span><h2>Quem vamos convidar?</h2></div>
+<label for="guest-one">Nome do convidado <span class="required">*</span></label><input id="guest-one" name="guestOne" maxlength="120" placeholder="Nome completo" required>
+<label for="guest-two">Segunda pessoa <small>opcional</small></label><input id="guest-two" name="guestTwo" maxlength="120" placeholder="Nome do acompanhante">
+<p class="help">Os nomes aparecem nos cartões. A segunda pessoa só é incluída quando preencher este campo.</p>
+<div class="section-heading"><span>02</span><h2>Detalhes do impresso</h2></div>
+<label for="phone">Contacto para confirmar a presença</label><input id="phone" type="tel" name="phone" maxlength="45" value="+258 84 458 4164" required>
+<p class="help">A confirmação pode ser feita por chamada, sem precisar de abrir um link.</p>
+<details><summary>Editar o programa do dia</summary><label for="programme">Uma actividade por linha</label><textarea id="programme" rows="6" maxlength="1100">10h00 | Cerimónia civil | Conservatório, Cidade de Nampula
+14h00 | Almoço e celebração | Salão de Eventos da Academia Militar, Cidade de Nampula</textarea><p class="help">Use: hora | actividade | local. Até 6 actividades. Os horários iniciais são os do convite.</p></details>
+<div class="section-heading"><span>03</span><h2>Preparar a impressão</h2></div>
+<fieldset><legend>Cartões a imprimir</legend><label class="check"><input type="checkbox" name="printPage" value="cover" checked> Capa</label><label class="check"><input type="checkbox" name="printPage" value="invitation" checked> Convite com nomes</label><label class="check"><input type="checkbox" name="printPage" value="programme" checked> Programa</label></fieldset>
+<p id="status" class="status" role="status" aria-live="polite">A preparar os cartões…</p>
+<button id="print" class="primary" type="button" disabled><span aria-hidden="true">↗</span> Imprimir / guardar PDF</button>
+<button id="download" class="secondary" type="button" disabled><span aria-hidden="true">↓</span> Descarregar este cartão · PNG</button>
+<p class="print-help">A5 · 148 × 210 mm · PNG a 300 ppp<br>Ao imprimir, use tamanho real (100%) e desactive os cabeçalhos e rodapés do navegador.</p>
+</form>
+<section class="preview" aria-labelledby="preview-title"><div class="preview-toolbar"><h2 id="preview-title">O seu convite</h2><span>A5 · VERTICAL</span></div>
+<div class="tabs" role="group" aria-label="Cartão em pré-visualização"><button type="button" data-page="cover" aria-pressed="false">Capa</button><button type="button" data-page="invitation" aria-pressed="true">Convite</button><button type="button" data-page="programme" aria-pressed="false">Programa</button></div>
+<div id="card-stage" class="card-stage"><canvas id="preview-canvas" width="1748" height="2480" role="img" aria-label="Pré-visualização do convite personalizado"></canvas></div>
+<p class="preview-caption">Uma celebração. As pessoas certas. Uma recordação para sempre.</p>
+</section>
+</div>
+<footer>ANASTÁCIA & BINA <span>·</span> NAMPULA, 2026<p>Os nomes são usados apenas nesta página e não são guardados nem enviados para o convite digital.</p></footer>
+</main>
+<div id="print-pages" aria-hidden="true"></div>
+<script src="./app.js" type="module"></script>
+</body>
+</html>
